@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MD on 有道无术，尚可求；有术无道，止于术</title>
+    <link>https://fusource.github.io/tags/MD/</link>
+    <description>Recent content in MD on 有道无术，尚可求；有术无道，止于术</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 15 May 2023 17:43:23 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/MD/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MD基础语法-常用</title>
+      <link>https://fusource.github.io/posts/MD%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Mon, 15 May 2023 17:43:23 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/MD%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/</guid>
+      <description>一、标题定义 语法1：# [content] 等效（# [content] #) eg: # Content 一级标题 ## Content 二级标题 ### Content 三级标题 #### Content 四级标题 ##### Content 五级标题 ###### Content 六级标题 语法2：===（1级标题）或者</description>
+    </item>
+    
+  </channel>
+</rss>
