@@ -9,10 +9,10 @@
     <lastBuildDate>Mon, 15 May 2023 17:43:23 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/MD/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>MD-1.基础语法-常用</title>
-      <link>https://fusource.github.io/posts/MD%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/</link>
+      <link>https://fusource.github.io/posts/2.MD%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/</link>
       <pubDate>Mon, 15 May 2023 17:43:23 +0800</pubDate>
       
-      <guid>https://fusource.github.io/posts/MD%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://fusource.github.io/posts/2.MD%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/</guid>
       <description>一、标题定义 语法1：# [content] 等效（# [content] #) eg: # Content 一级标题 ## Content 二级标题 ### Content 三级标题 #### Content 四级标题 ##### Content 五级标题 ###### Content 六级标题 语法2：===（1级标题）或者</description>
     </item>
     
