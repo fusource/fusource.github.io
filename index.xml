@@ -18,11 +18,20 @@
     
     <item>
       <title>设计模式：开篇</title>
-      <link>https://fusource.github.io/posts/4.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E7%AF%87/</link>
+      <link>https://fusource.github.io/posts/5.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E7%AF%87/</link>
       <pubDate>Mon, 22 May 2023 11:26:49 +0800</pubDate>
       
-      <guid>https://fusource.github.io/posts/4.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E7%AF%87/</guid>
+      <guid>https://fusource.github.io/posts/5.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E7%AF%87/</guid>
       <description>1. 从无到有 这个标题甚是抽象,也有点夸大其词了。初入代码这一行， 终究是以需求为导向，以实现功能为目标，以效率为评判标准。在过去相当一段时间里，</description>
+    </item>
+    
+    <item>
+      <title>Powerdesigner使用</title>
+      <link>https://fusource.github.io/posts/4.powerdesigner%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 22 May 2023 11:26:11 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/4.powerdesigner%E4%BD%BF%E7%94%A8/</guid>
+      <description>PowerDesinger数据建模的浅谈 1.建立新模型 2.选择建立物理数据模型: 可以选择使用的数据库语言 3.建立表: 左键点击Table这个图</description>
     </item>
     
     <item>
