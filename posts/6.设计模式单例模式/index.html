@@ -9,20 +9,20 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>Vscode Vim 1常用指令 | 有道无术，尚可求；有术无道，止于术</title>
-    <meta property="og:title" content="Vscode Vim 1常用指令 - 有道无术，尚可求；有术无道，止于术">
+    <title>设计模式：单例模式 | 有道无术，尚可求；有术无道，止于术</title>
+    <meta property="og:title" content="设计模式：单例模式 - 有道无术，尚可求；有术无道，止于术">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2023-05-22T11:26:01&#43;08:00'>
+    <meta property="article:published_time" content='2023-05-24T09:24:23&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2023-05-22T11:26:01&#43;08:00'>
+    <meta property="article:modified_time" content='2023-05-24T09:24:23&#43;08:00'>
         
     <meta name="Keywords" content="golang,go语言,go语言笔记,飞雪无情,java,android,博客,项目管理,python,软件架构,公众号,小程序">
-    <meta name="description" content="Vscode Vim 1常用指令">
+    <meta name="description" content="设计模式：单例模式">
         
     <meta name="author" content="木心芽">
-    <meta property="og:url" content="https://fusource.github.io/posts/3.vscode-vim-1%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/">
+    <meta property="og:url" content="https://fusource.github.io/posts/6.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
@@ -180,18 +180,18 @@
 </script>
     <article class="post">
         <header>
-            <h1 class="post-title">Vscode Vim 1常用指令</h1>
+            <h1 class="post-title">设计模式：单例模式</h1>
         </header>
         
-  <time datetime="2023-05-22T03:26:01Z" class="post-meta meta-date dt-published">
-    2023-05-22
+  <time datetime="2023-05-24T01:24:23Z" class="post-meta meta-date dt-published">
+    2023-05-24
   </time>
 
 
 <div class="post-meta meta-category">
   <span>&nbsp;|</span>
   
-    <a href='/categories/vim' target="_blank">vim</a>
+    <a href='/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F' target="_blank">设计模式</a>
   
 </div>
 
@@ -205,18 +205,120 @@
         
         
         <div class="post-content">
-            <h1 id="1-vim键盘图">1. Vim键盘图</h1>
-<p>
-        <a data-fancybox="gallery" href="/images/vim-1.webp">
-            <img class="mx-auto" alt="vim键盘图" src="/images/vim-1.webp" />
-        </a>
-    </p>
-<h1 id="2-vim常用指令">2. vim常用指令</h1>
-<p>
-        <a data-fancybox="gallery" href="/images/vim-2.jpg">
-            <img class="mx-auto" alt="" src="/images/vim-2.jpg" />
-        </a>
-    </p>
+            <h1 id="定义">定义</h1>
+<blockquote>
+<p><em><strong>单例设计模式(Singleton Design Pattern):在应用作用域中，类只允许创建一个实例(对象)</strong></em></p>
+</blockquote>
+<h1 id="如何实现一个单例">如何实现一个单例？</h1>
+<p>实现一个单例，需要关注下面几个要点：</p>
+<ul>
+<li>构建函数需要是私有权限的,这样才能规避外部调用new创建实例;</li>
+<li>考虑对象创建时的线程安全问题;</li>
+<li>单例实例创建是否支持延迟加载</li>
+<li>考虑getInstance()性能设计时候，根据应用场景考虑是否嵌入加锁</li>
+</ul>
+<h1 id="1-饿汉式创建单例">1. 饿汉式创建单例</h1>
+<p>饿汉式创建单例方式，在类初始化的时候，完成instance实例的创建并完成初始化，所以instance实例的创建过程是线程安全的.</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">var</span> inStance idGenerator
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">type</span> idGenerator <span style="color:#000;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">init</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#900;font-weight:bold">Seed</span>(time.<span style="color:#900;font-weight:bold">Now</span>().<span style="color:#900;font-weight:bold">UnixNano</span>())
+</span></span><span style="display:flex;"><span>	inStance = idGenerator{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">GetInstance</span>() idGenerator {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> inStance
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> (id idGenerator) <span style="color:#900;font-weight:bold">GetId</span>() <span style="color:#458;font-weight:bold">uint64</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> rand.<span style="color:#900;font-weight:bold">Uint64</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>资源:如果实例占用资源多，提前初始化实例是浪费资源的行为。最好是等到程序需要用的时候再去初始化，按照fail-fast的设计原则(有问题早发现早处理),如果资源不够，在程序启动的时候就触发报错</li>
+<li>耗时:如果存在初始化过程比较耗时，我们可以在程序启动的时候，将耗时初始化操作，提前放到程序启动的时候完成。</li>
+<li>延迟加载:不支持</li>
+</ul>
+<h1 id="2-懒汉式创建实例">2. 懒汉式创建实例</h1>
+<p>懒汉式相较于饿汉式的创建实例的优势，在于支持延时加载</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">var</span> inStance <span style="color:#000;font-weight:bold">*</span>idGenerator
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">var</span> m sync.Mutex
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">type</span> idGenerator <span style="color:#000;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">GetInstance</span>() <span style="color:#000;font-weight:bold">*</span>idGenerator {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> inStance <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		m.<span style="color:#900;font-weight:bold">Lock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">if</span> inStance <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>			inStance = <span style="color:#000;font-weight:bold">&amp;</span>idGenerator{}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		m.<span style="color:#900;font-weight:bold">Unlock</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> inStance
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> (id idGenerator) <span style="color:#900;font-weight:bold">GetId</span>() <span style="color:#458;font-weight:bold">uint64</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> rand.<span style="color:#900;font-weight:bold">Uint64</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>思考：</p>
+<ul>
+<li>如何理解单例模式中的唯一性？</li>
+<li>如何实现线程唯一的单例？</li>
+<li>如何实现集群环境下的单例？</li>
+<li>如何实现一个多例模式？</li>
+</ul>
 
         </div>
 
@@ -229,15 +331,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
+        <li><a href="/posts/5.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E7%AF%87/">设计模式：开篇</a></li>
+        
+        <li><a href="/posts/GIN-1.gin%E7%B3%BB%E5%88%97%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/">GIN 1.gin系列源码学习</a></li>
+        
+        <li><a href="/posts/4.powerdesigner%E4%BD%BF%E7%94%A8/">Powerdesigner使用</a></li>
+        
+        <li><a href="/posts/3.vscode-vim-1%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/">Vscode Vim 1常用指令</a></li>
+        
         <li><a href="/posts/2.MD%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/">MD-1.基础语法-常用</a></li>
-        
-        <li><a href="/posts/1.UML%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%E9%9A%8F%E8%AE%B0-1/">UML-1.使用教程随记</a></li>
-        
-        <li><a href="/tools/">工具</a></li>
-        
-        <li><a href="/archives/">归档</a></li>
-        
-        <li><a href="/about/">关于</a></li>
         
     </ul>
 </div>
@@ -247,7 +349,7 @@
             
             <ul class="clearfix">
                 
-                <li><a href='/tags/vim' target="_blank">vim</a></li>
+                <li><a href='/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F' target="_blank">设计模式</a></li>
                 
             </ul>
             
