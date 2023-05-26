@@ -85,7 +85,7 @@
       <pubDate>Sun, 14 May 2023 21:54:22 +0800</pubDate>
       
       <guid>https://fusource.github.io/tools/</guid>
-      <description></description>
+      <description>webservice:gin,beego sql:mysql,postgresql,sqlite,redis,tidb,mongodb 框架：gorm,sqlc,xorm,ent 微服务框架:istio,go-zero</description>
     </item>
     
     <item>
