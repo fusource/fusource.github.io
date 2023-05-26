@@ -154,6 +154,7 @@
     <li><a href="#52带返回参数的数据插入">5.2.带返回参数的数据插入</a></li>
     <li><a href="#6更新数据操作">6.更新数据操作</a></li>
     <li><a href="#7删除数据">7.删除数据</a></li>
+    <li><a href="#执行生成代码">执行生成代码</a></li>
   </ul>
 </nav>
     </div>
@@ -293,6 +294,32 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#000080">engine</span>:<span style="color:#bbb"> </span><span style="color:#d14">&#34;mysql&#34;</span><span style="color:#bbb">             </span><span style="color:#998;font-style:italic"># mysql,postgresql,sqlite</span><span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#000080">schema</span>:<span style="color:#bbb"> </span><span style="color:#d14">&#34;schema.sql&#34;</span><span style="color:#bbb">        </span><span style="color:#998;font-style:italic"># 指定表结构文件</span><span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#000080">queries</span>:<span style="color:#bbb"> </span><span style="color:#d14">&#34;query.sql&#34;</span><span style="color:#bbb">        </span><span style="color:#998;font-style:italic"># 指定查询语句文件</span><span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">version</span>:<span style="color:#bbb"> </span><span style="color:#d14">&#34;2&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#000;font-weight:bold">sql</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">-</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">schema</span>:<span style="color:#bbb"> </span><span style="color:#d14">&#34;./schema.sql&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>queries:<span style="color:#bbb"> </span><span style="color:#d14">&#34;./query.sql&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>engine:<span style="color:#bbb"> </span><span style="color:#d14">&#34;mysql&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>gen:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">go</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span>package:<span style="color:#bbb"> </span><span style="color:#d14">&#34;authors&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#000;font-weight:bold">out</span>:<span style="color:#bbb"> </span><span style="color:#d14">&#34;author&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span>emit_json_tags:<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">true</span><span style="color:#bbb">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>schema.sql文件示例：</p>
@@ -638,6 +665,15 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#998;font-style:italic">-- name: DeleteAuthor :exec
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">DELETE</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">FROM</span><span style="color:#bbb"> </span>authors<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>id<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">=</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">?</span>;<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="执行生成代码">执行生成代码</h2>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>sqlc<span style="color:#bbb"> </span>generate<span style="color:#bbb"> </span>.<span style="color:#bbb">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div>
