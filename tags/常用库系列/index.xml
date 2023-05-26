@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>常用库系列 on 有道无术，尚可求；有术无道，止于术</title>
+    <link>https://fusource.github.io/tags/%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97/</link>
+    <description>Recent content in 常用库系列 on 有道无术，尚可求；有术无道，止于术</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 25 May 2023 15:12:45 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>常用库系列之:sqlc</title>
+      <link>https://fusource.github.io/posts/7.%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97%E4%B9%8Bsqlc/</link>
+      <pubDate>Thu, 25 May 2023 15:12:45 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/7.%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97%E4%B9%8Bsqlc/</guid>
+      <description>1. 作用 根据编写的sql语句生成go语言的调用代码 sqlc官网 2. 安装sqlc 安装方式： 平台 安装指令 macOS brew install sqlc ubuntu sudo snap install sqlc Go&amp;gt;=1.17 go install github.com/kyleconroy/sqlc/cmd/sqlc@latest Go&amp;lt;1.17 go get github.com/kyleconroy/sqlc/cmd/sqlc Docker docker pull kjconroy/sqlc downloads</description>
+    </item>
+    
+  </channel>
+</rss>
