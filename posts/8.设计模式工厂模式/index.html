@@ -9,20 +9,20 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>设计模式：开篇 | 有道无术，尚可求；有术无道，止于术</title>
-    <meta property="og:title" content="设计模式：开篇 - 有道无术，尚可求；有术无道，止于术">
+    <title>设计模式：工厂模式 | 有道无术，尚可求；有术无道，止于术</title>
+    <meta property="og:title" content="设计模式：工厂模式 - 有道无术，尚可求；有术无道，止于术">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2023-05-22T11:26:49&#43;08:00'>
+    <meta property="article:published_time" content='2023-06-12T10:11:55&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2023-05-22T11:26:49&#43;08:00'>
+    <meta property="article:modified_time" content='2023-06-12T10:11:55&#43;08:00'>
         
     <meta name="Keywords" content="golang,go语言,go语言笔记,飞雪无情,java,android,博客,项目管理,python,软件架构,公众号,小程序">
-    <meta name="description" content="设计模式：开篇">
+    <meta name="description" content="设计模式：工厂模式">
         
     <meta name="author" content="木心芽">
-    <meta property="og:url" content="https://fusource.github.io/posts/5.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E7%AF%87/">
+    <meta property="og:url" content="https://fusource.github.io/posts/8.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
@@ -180,11 +180,11 @@
 </script>
     <article class="post">
         <header>
-            <h1 class="post-title">设计模式：开篇</h1>
+            <h1 class="post-title">设计模式：工厂模式</h1>
         </header>
         
-  <time datetime="2023-05-22T03:26:49Z" class="post-meta meta-date dt-published">
-    2023-05-22
+  <time datetime="2023-06-12T02:11:55Z" class="post-meta meta-date dt-published">
+    2023-06-12
   </time>
 
 
@@ -205,115 +205,96 @@
         
         
         <div class="post-content">
-            <h1 id="1-从无到有">1. 从无到有</h1>
-<pre tabindex="0"><code>  这个标题甚是抽象,也有点夸大其词了。初入代码这一行， 终究是以需求为导向，以实现功能为目标，以效率为评判标准。在过去相当一段时间里，信奉着这条标准并执行着，不考虑代码的整洁之道，不考虑整个项目的结构划分、分层等设计；尤其是一些重复性的工作，那就更是“拿来主义”执行到底，并不关心代码的执行效率，适用性，拓展性，可读性，易用性，可测试，可维护性等，我相信，有些码友也会有相同的经历。   
-  慢慢的，你会开始阅读一些开源项目源码，你就会有苦恼而生。这部分的代码为什么要这样写？这块代码怎么读不懂？别人写的代码真好！！！哈哈哈，都说问题是思考的驱动器！那么恭喜你，你要开始转变，你就要踏入这个分水岭的阶梯了。他也是衡量一个优秀工程师的标准之一  
-
-  往后篇章，会根据传统方式一样来进行理解记录，分为三部分：创建型模式、结构型模式、行为型模式  
-    程序 = 结构+算法
-</code></pre><h1 id="2-创建型模式4种">2. 创建型模式(4种)</h1>
-<pre tabindex="0"><code> 单例模式、工厂模式、建造模式、原型模式
-</code></pre><h1 id="3-结构性模式7种">3. 结构性模式(7种)</h1>
-<pre tabindex="0"><code> 代理模式、桥接模式、装饰器模式、适配器模式、门面模式、组合模式、享元模式
-</code></pre><h1 id="4-行为型模式11种">4. 行为型模式(11种)</h1>
-<pre tabindex="0"><code> 观察者模式、模板模式、策略模式、职责链模式、迭代器模式、状态模式、备忘录模式、访问者模式、命令模式、解释器模式、中介模式
-</code></pre><hr>
-<h1 id="设计思想与原则">设计思想与原则</h1>
-<blockquote>
-<p>编程范式：面向过程、面向函数、面向对象。这是&quot;上层构建&quot;的基础。目前主流的是面向对象编程，基于这一点，优秀的大佬们总结归纳了经典的设计思想与原则。其中包括了：SOLID、KISS、YANGNI、LOD等，设计原则是道、设计模式是法。需要融会贯通，灵活运用。</p>
-</blockquote>
-<h1 id="一单一职责原则srp-single-responsibility-principly">一：单一职责原则(SRP single responsibility principly)</h1>
-<pre tabindex="0"><code>总义：一个单元(系统、层、类、方法等)只负责完成一个职责(或者功能)
-
-功能：1.提高类的内聚性
-      2.实现代码的高内聚、低耦合
-
-注意：1.类中代码的行数、函数或者属性过多
-      2.类依赖的其它类过多或者依赖类的其他类过多
-      3.私有方法过多
-      4.比较难给雷起一个合适的名字
-      5.类中充斥大量的方法，集中在操作类中的某几个属性
-</code></pre><h1 id="二开闭原则ocp-open-closed-principle">二：开闭原则(OCP open closed principle)</h1>
-<pre tabindex="0"><code>总义：对象单元（系统、层、模块、类、方法等）应该&#34;对拓展开发，对修改关闭&#34;
-
-理解：1.开闭原则并不是说完全杜绝修改，而是以最小的修改代码的代价来完成新功能的开发
-      2.同样的代码改动，在粗代码力度下，可能被认定为&#34;修改&#34;;在细粒度代码下，可能又被认定位&#34;拓展&#34;
-
-应用：1.时刻具备拓展意识、抽象意识、封装意识
-      2.提高代码拓展性的方法：1.多态
-                              2.依赖注入
-                              3.基于接口而非实现编程
-                              4.适用设计模式：装饰、测率、模板、职责链、状态
-</code></pre><h1 id="三里氏替换原则lsp-liskov-substitution-principle">三：里氏替换原则(LSP liskov substitution principle)</h1>
-<pre tabindex="0"><code>总义：子类对象能够替换程序中父类对象出现的任何地方，并且保证原来程序的逻辑性为不变及正确性不被破坏
-
-核心：“design by contract,按照协议来设计”。父类定义了函数的“约定（或协议）”，子类可以改变函数的内部实现逻辑，但不能改变函数的原有的“约定”
-
-对比：1.多态是面向编程的一大特性，是面向对象编程语言的一种语法，是一种代码实现思路
-      2.里氏替换是一种设计原则，用来指导继承关系中子类该如何设计，子类的设计要保证在替换父类的时候，不改变原有程序的逻辑及不破坏原有程序的正确性
-</code></pre><h1 id="四接口隔离原则isp-interface-segregation-principle">四：接口隔离原则(ISP interface segregation principle)</h1>
-<pre tabindex="0"><code>总义：客户端不应该强迫依赖它不需要的接口。其中的“客户端”，可以理解为接口的调用者或者使用者
-
-核心：1.把&#34;接口&#34;理解为一组接口集合
-      2.把&#34;接口&#34;理解为单个API接口或函数
-      3.把&#34;接口&#34;理解为OOP中的接口
-
-对比：1.单一职责原则针对的是模块、类、接口的设计
-      2.接口隔离原则提供了一种判断接口的职责是否单一的标准：通过调用者如何使用接口来间接地判定
-</code></pre><h1 id="五依赖倒置原则dip-dependency-inversion-principle">五：依赖倒置原则(DIP dependency inversion principle)</h1>
-<pre tabindex="0"><code>总义：上层模块不要依赖低层模块。上层模块和低层模块应该通过抽象来相互依赖。抽象不要依赖具体实现细节，具体细节依赖抽象
-
-其他：1.控制反转：一个比较笼统的设计，并不是一个具体的实现方法
-      2.依赖注入：和控制反转悄悄相反，是一种具体的编码技巧
-      3.依赖注入框架：通过依赖注入框架提供的拓展点，简单配置一下所有需要的类及类与类之间的依赖关系，就可以实现由框架来自动创建对象、管理对象的生命周期、依赖注入等原本需要程序员来做的事情
-      4.依赖反转原则：也叫做依赖倒置原则。跟控制反转有点类似，主要用来指导框架层面的设计
-</code></pre><h1 id="六kissyagni原则">六：KISS,YAGNI原则</h1>
-<pre tabindex="0"><code>KISS原则：(keep it simple and stupid)
-        总义：尽量保持简单
-        意义：是保持代码可读和可维护的重要手段
-        如何做：
-              1.不要使用同事可能不懂的技术来实现
-              2.不要重复造轮子、善于使用已经有的工具类库
-              3.不要过度优化
-
-YAGNI原则：(you ain`t gonna need it)
-        总义：不要去设计当前用不到的功能，不要去编写当前用不到的代码
-        核心：不要过度设计
-
-对比：
-      1.KISS原则：&#34;如何做&#34;,尽量保持简单
-      2.YAGNI原则：&#34;要不要做&#34;,当前不需要的就不要做
-</code></pre><h1 id="七dry原则dont-repeat-yourself">七：DRY原则(Don`t repeat yourself)</h1>
-<pre tabindex="0"><code>总义：不要写重复的代码
-
-理解：1.实现逻辑重复
-      2.实现语义重复
-      3.代码执行重复
-
-提高代码复用性的手段：
-                    1.减少代码耦合
-                    2.满足单一职责原则
-                    3.模块化
-                    4.业务与非业务逻辑分离
-                    5.通用代码下沉
-                    6.继承、多态、抽象、封装
-                    7.应用模块设计模式
-                    8.有复用意识
-</code></pre><h1 id="八迪米特法则lod-law-of-demeter">八：迪米特法则(LOD law of demeter)</h1>
-<pre tabindex="0"><code>总义：最小知识封装，不该有直接依赖关系的类之间，不要有依赖；有依赖关系的类之间，尽量只依赖必要的接口
-
-意义：减少类之间的耦合，让类越独立越好
-
-作用：
-    1.高内聚：指导类本身的设计。松耦合：指导类与类之间依赖关系的设计
-    2.高内聚：相近的功能应该放到同一个类中，不相近的功能与要放在同一个类中
-    3.松耦合：即使两个类有依赖关系，一个类的改动也不会或者很少导致依赖类的代码改动
-</code></pre><p>
-        <a data-fancybox="gallery" href="/images/ood.jpg">
-            <img class="mx-auto" alt="xmind" src="/images/ood.jpg" />
-        </a>
-    </p>
-
+            <h1 id="1简单工厂模式一">1.简单工厂模式一：</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>大部分工厂类都是以&#34;Factory&#34;结尾，也不是必须，一般会结合语义场景来定义命名。有create开头的，有getInstance()、createInstance()、newInstance()的命名方式。以下代码根据实际情况我们可知，节省内存和创建的过程，我们可以在程序启动时候提前加载好并缓存起来，使用的时候直接拿来使用。
+</span></span><span style="display:flex;"><span>记忆区分：简单工厂模式，根据特定的特征，生产固定的对象模型
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">type</span> RuleConfigSource <span style="color:#000;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> (r RuleConfigSource) <span style="color:#900;font-weight:bold">Load</span>(ruleConfigFilePath <span style="color:#458;font-weight:bold">string</span>) RuleConfig {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">var</span> ruleConfigFileExtension <span style="color:#458;font-weight:bold">string</span> = <span style="color:#900;font-weight:bold">getFileExtension</span>(ruleConfigFilePath)
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">var</span> parser IRuleConfigParser = RuleConfigParserFactory.<span style="color:#900;font-weight:bold">createParser</span>(ruleConfigFileExtension)
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> parser <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		errors.<span style="color:#900;font-weight:bold">New</span>(<span style="color:#d14">&#34;Rule config file format is not supported: &#34;</span> <span style="color:#000;font-weight:bold">+</span> ruleConfigFilePath)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">var</span> configText <span style="color:#458;font-weight:bold">string</span> = <span style="color:#d14">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">var</span> ruleConfig RuleConfig = parser.<span style="color:#900;font-weight:bold">Parser</span>(configText)
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> ruleConfig
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">getFileExtension</span>(filePath <span style="color:#458;font-weight:bold">string</span>) <span style="color:#458;font-weight:bold">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> <span style="color:#d14">&#34;json&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">type</span> RuleConfigParserFactory <span style="color:#000;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">createParser</span>(configFormat <span style="color:#458;font-weight:bold">string</span>) IRuleConfigParser {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">var</span> parser IRuleConfigParser
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> strings.<span style="color:#900;font-weight:bold">Contains</span>(configFormat, <span style="color:#d14">&#34;json&#34;</span>) {
+</span></span><span style="display:flex;"><span>		parser = JsonRuleConfigParser{}
+</span></span><span style="display:flex;"><span>	} <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> strings.<span style="color:#900;font-weight:bold">Contains</span>(configFormat, <span style="color:#d14">&#34;xml&#34;</span>) {
+</span></span><span style="display:flex;"><span>		parser = XmlRuleConfigParser{}
+</span></span><span style="display:flex;"><span>	} <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> strings.<span style="color:#900;font-weight:bold">Contains</span>(configFormat, <span style="color:#d14">&#34;yaml&#34;</span>) {
+</span></span><span style="display:flex;"><span>		parser = YamlRuleConfigParser{}
+</span></span><span style="display:flex;"><span>	} <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> strings.<span style="color:#900;font-weight:bold">Contains</span>(configFormat, <span style="color:#d14">&#34;properties&#34;</span>) {
+</span></span><span style="display:flex;"><span>		parser = PropertiesRuleConfigParser{}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> parser
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
         </div>
 
         
@@ -325,15 +306,15 @@ YAGNI原则：(you ain`t gonna need it)
     <h2>See Also</h2>
     <ul class="listing">
         
+        <li><a href="/posts/6.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">设计模式：单例模式</a></li>
+        
+        <li><a href="/posts/5.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E7%AF%87/">设计模式：开篇</a></li>
+        
+        <li><a href="/posts/7.%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97%E4%B9%8Bsqlc/">常用库系列之:sqlc</a></li>
+        
+        <li><a href="/posts/GIN-1.gin%E7%B3%BB%E5%88%97%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/">GIN 1.gin系列源码学习</a></li>
+        
         <li><a href="/posts/4.powerdesigner%E4%BD%BF%E7%94%A8/">Powerdesigner使用</a></li>
-        
-        <li><a href="/posts/3.vscode-vim-1%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/">Vscode Vim 1常用指令</a></li>
-        
-        <li><a href="/posts/2.MD%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/">MD-1.基础语法-常用</a></li>
-        
-        <li><a href="/posts/1.UML%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%E9%9A%8F%E8%AE%B0-1/">UML-1.使用教程随记</a></li>
-        
-        <li><a href="/tools/">工具</a></li>
         
     </ul>
 </div>

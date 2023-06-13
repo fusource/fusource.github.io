@@ -6,7 +6,16 @@
     <description>Recent content in 设计模式 on 有道无术，尚可求；有术无道，止于术</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 24 May 2023 09:24:23 +0800</lastBuildDate><atom:link href="https://fusource.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 12 Jun 2023 10:11:55 +0800</lastBuildDate><atom:link href="https://fusource.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>设计模式：工厂模式</title>
+      <link>https://fusource.github.io/posts/8.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Mon, 12 Jun 2023 10:11:55 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/8.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</guid>
+      <description>1.简单工厂模式一： 1 2 大部分工厂类都是以&amp;#34;Factory&amp;#34;结尾，也不是必须，一般会结合语义场景来定义命名。有create开</description>
+    </item>
+    
     <item>
       <title>设计模式：单例模式</title>
       <link>https://fusource.github.io/posts/6.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
