@@ -144,7 +144,12 @@
 <div class="post-toc" style="position: absolute; top: 188px;">
     <h2 class="post-toc-title">Table of Contents</h2>
     <div class="post-toc-content">
-        <nav id="TableOfContents"></nav>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#21-alter-table">2.1 ALTER TABLE</a></li>
+    <li><a href="#22-create-index">2.2 CREATE INDEX</a></li>
+  </ul>
+</nav>
     </div>
 </div>
 <script type="text/javascript">
@@ -209,7 +214,72 @@
         <div class="post-content">
             <p><a href="https://sunzhy.blog.csdn.net/article/details/46337239">https://sunzhy.blog.csdn.net/article/details/46337239</a></p>
 <h1 id="索引的作用">索引的作用</h1>
-
+<p>在索引列上，除了上面提到的有序查找之外，数据库利用各种各样的快速定位技术，能够大大提高查询效率。特别是当数据量非常大，查询涉及多个表时，使用索引往往能使查询速度加快成千上万倍。</p>
+<p>例如，有3个未索引的表t1、t2、t3，分别只包含列c1、c2、c3，每个表分别含有1000行数据组成，指为1～1000的数值，查找对应值相等行的查询如下所示。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>c1,c2,c3<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">FROM</span><span style="color:#bbb"> </span>t1,t2,t3<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">WHERE</span><span style="color:#bbb"> </span>c1<span style="color:#000;font-weight:bold">=</span>c2<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">AND</span><span style="color:#bbb"> </span>c1<span style="color:#000;font-weight:bold">=</span>c3<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>此查询结果应该为1000行，每行包含3个相等的值。在无索引的情况下处理此查询，必须寻找3个表所有的组合，以便得出与WHERE子句相配的那些行。而可能的组合数目为1000×1000×1000（十亿），显然查询将会非常慢。</p>
+<p>如果对每个表进行索引，就能极大地加速查询进程。利用索引的查询处理如下。</p>
+<p>（1）从表t1中选择第一行，查看此行所包含的数据。</p>
+<p>（2）使用表t2上的索引，直接定位t2中与t1的值匹配的行。类似，利用表t3上的索引，直接定位t3中与来自t1的值匹配的行。</p>
+<p>（3）扫描表t1的下一行并重复前面的过程，直到遍历t1中所有的行。</p>
+<p>在此情形下，仍然对表t1执行了一个完全扫描，但能够在表t2和t3上进行索引查找直接取出这些表中的行，比未用索引时要快一百万倍。</p>
+<p>利用索引，MySQL加速了WHERE子句满足条件行的搜索，而在多表连接查询时，在执行连接时加快了与其他表中的行匹配的速度。</p>
+<h1 id="2创建索引">2.创建索引</h1>
+<p>在执行CREATE TABLE语句时可以创建索引，也可以单独用CREATE INDEX或ALTER TABLE来为表增加索引。</p>
+<h2 id="21-alter-table">2.1 ALTER TABLE</h2>
+<blockquote>
+<p>ALTER TABLE用来创建普通索引、UNIQUE所以和PRIMARY KEY索引</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">table_name</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">ADD</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">INDEX</span><span style="color:#bbb"> </span>index_name<span style="color:#bbb"> </span>(column_list)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#000;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">table_name</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">ADD</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">UNIQUE</span><span style="color:#bbb"> </span>(column_list)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#000;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">TABLE</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">table_name</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">ADD</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(column_list)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="22-create-index">2.2 CREATE INDEX</h2>
+<p>CREATE INDEX可对表增加普通索引或UNIQUE索引。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">INDEX</span><span style="color:#bbb"> </span>index_name<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">ON</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">table_name</span><span style="color:#bbb"> </span>(column_list)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#000;font-weight:bold">CREATE</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">UNIQUE</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">INDEX</span><span style="color:#bbb"> </span>index_name<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">ON</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">table_name</span><span style="color:#bbb"> </span>(column_list)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="3索引类型">3.索引类型</h1>
+<p>在创建索引时，可以规定索引能否包含重复值。如果不包含，则索引应该创建为PRIMARY KEY或UNIQUE索引。对于单列惟一性索引，这保证单列不包含重复的值。对于多列惟一性索引，保证多个值的组合不重复。</p>
+<p>PRIMARY KEY索引和UNIQUE索引非常类似。事实上，PRIMARY KEY索引仅是一个具有名称PRIMARY的UNIQUE索引。这表示一个表只能包含一个PRIMARY KEY，因为一个表中不可能具有两个同名的索引。</p>
+<p>下面的SQL语句对students表在sid上添加PRIMARY KEY索引。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">ALTER</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">TABLE</span><span style="color:#bbb"> </span>students<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">ADD</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">PRIMARY</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">KEY</span><span style="color:#bbb"> </span>(sid)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
         </div>
 
         
