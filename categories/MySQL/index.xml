@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MySQL on 有道无术，尚可求；有术无道，止于术</title>
+    <link>https://fusource.github.io/categories/MySQL/</link>
+    <description>Recent content in MySQL on 有道无术，尚可求；有术无道，止于术</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 15 Jun 2023 15:01:43 +0800</lastBuildDate><atom:link href="https://fusource.github.io/categories/MySQL/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>数据库 MySQL索引的创建、删除和查看</title>
+      <link>https://fusource.github.io/posts/10.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%9B%E5%BB%BA%E5%88%A0%E9%99%A4%E5%92%8C%E6%9F%A5%E7%9C%8B/</link>
+      <pubDate>Thu, 15 Jun 2023 15:01:43 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/10.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%9B%E5%BB%BA%E5%88%A0%E9%99%A4%E5%92%8C%E6%9F%A5%E7%9C%8B/</guid>
+      <description>索引的作用</description>
+    </item>
+    
+  </channel>
+</rss>
