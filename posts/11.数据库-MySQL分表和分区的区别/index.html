@@ -9,20 +9,20 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>数据库:理论基础 | 有道无术，尚可求；有术无道，止于术</title>
-    <meta property="og:title" content="数据库:理论基础 - 有道无术，尚可求；有术无道，止于术">
+    <title>数据库 MySQL分表和分区的区别 | 有道无术，尚可求；有术无道，止于术</title>
+    <meta property="og:title" content="数据库 MySQL分表和分区的区别 - 有道无术，尚可求；有术无道，止于术">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2023-06-14T14:45:36&#43;08:00'>
+    <meta property="article:published_time" content='2023-06-19T10:10:17&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2023-06-14T14:45:36&#43;08:00'>
+    <meta property="article:modified_time" content='2023-06-19T10:10:17&#43;08:00'>
         
     <meta name="Keywords" content="golang,go语言,go语言笔记,飞雪无情,java,android,博客,项目管理,python,软件架构,公众号,小程序">
-    <meta name="description" content="数据库:理论基础">
+    <meta name="description" content="数据库 MySQL分表和分区的区别">
         
     <meta name="author" content="木心芽">
-    <meta property="og:url" content="https://fusource.github.io/posts/9.%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/">
+    <meta property="og:url" content="https://fusource.github.io/posts/11.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%88%86%E8%A1%A8%E5%92%8C%E5%88%86%E5%8C%BA%E7%9A%84%E5%8C%BA%E5%88%AB/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
@@ -146,21 +146,10 @@
     <div class="post-toc-content">
         <nav id="TableOfContents">
   <ul>
-    <li><a href="#一sql语句分类">一、SQL语句分类</a></li>
-    <li><a href="#二查询流程概述">二、查询流程概述</a></li>
-    <li><a href="#三基于规则的查询优化">三、基于规则的查询优化</a></li>
-    <li><a href="#四基于代价的查询优化">四、基于代价的查询优化</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#一查询流程和表达式">一、查询流程和表达式</a>
-      <ul>
-        <li><a href="#1-查询流程">1. 查询流程</a></li>
-        <li><a href="#2-查询计划">2. 查询计划</a></li>
-        <li><a href="#3表达式expression">3.表达式（Expression）</a></li>
-      </ul>
-    </li>
-    <li><a href="#二常见运算符">二、常见运算符</a></li>
+    <li><a href="#1实现方式上">1.实现方式上</a></li>
+    <li><a href="#2数据处理上">2.数据处理上</a></li>
+    <li><a href="#3提高性能上">3.提高性能上</a></li>
+    <li><a href="#4实现的难易度上">4.实现的难易度上</a></li>
   </ul>
 </nav>
     </div>
@@ -198,18 +187,20 @@
 </script>
     <article class="post">
         <header>
-            <h1 class="post-title">数据库:理论基础</h1>
+            <h1 class="post-title">数据库 MySQL分表和分区的区别</h1>
         </header>
         
-  <time datetime="2023-06-14T06:45:36Z" class="post-meta meta-date dt-published">
-    2023-06-14
+  <time datetime="2023-06-19T02:10:17Z" class="post-meta meta-date dt-published">
+    2023-06-19
   </time>
 
 
 <div class="post-meta meta-category">
   <span>&nbsp;|</span>
   
-    <a href='/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%90%86%E8%AE%BA' target="_blank">数据库理论</a>
+    <a href='/categories/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a>
+  
+    <a href='/categories/MySQL' target="_blank">MySQL</a>
   
 </div>
 
@@ -223,95 +214,88 @@
         
         
         <div class="post-content">
-            <hr>
-<h1 id="sql查询引擎概述-关系模型与查询优化">SQL查询引擎概述-关系模型与查询优化</h1>
-<h2 id="一sql语句分类">一、SQL语句分类</h2>
-<blockquote>
-<p>关系模型-&gt;关系代数(过程式)-&gt;SQL(声明式)</p>
-</blockquote>
-<p>SQL语句分类
-
-        <a data-fancybox="gallery" href="/images/sql/sql1.png">
-            <img class="mx-auto" alt="SQL语句分类" src="/images/sql/sql1.png" />
-        </a>
-    </p>
-<hr>
-<blockquote>
-<p>SQL-&gt;AST-&gt;Logical Plan Tree-&gt;Physical Plan Tree</p>
-</blockquote>
-<h2 id="二查询流程概述">二、查询流程概述</h2>
-<p>查询流程
-
-        <a data-fancybox="gallery" href="/images/sql/sql2.webp">
-            <img class="mx-auto" alt="查询流程" src="/images/sql/sql2.webp" />
-        </a>
-    </p>
-<h2 id="三基于规则的查询优化">三、基于规则的查询优化</h2>
-<p>基于关系代数等价性进行逻辑变换，减少无用开销</p>
-<ul>
-<li>关系代数等价：关系代数表达式生成相同的结果集</li>
-<li>依据关系代数的等价交换原则做一些逻辑变换</li>
-<li>谓词下推：1) 尽可能早地进行过滤；2) 分解复杂的谓词条件，下推；3) 分解连接条件，笛卡尔积转Join计算</li>
-<li>投影下推：提前做投影，去除不需要的列信息</li>
-<li>排序、Limit、聚合下推</li>
-<li>投影消除：如果子集投影和投影操作相同，则消除投影操作</li>
-<li>排序消除：如果子集结果排序和排序操作相同，则消除排序操作</li>
-</ul>
-<h2 id="四基于代价的查询优化">四、基于代价的查询优化</h2>
-<p>基于统计信息进行代价搜索，选择最优的物理执行计划</p>
-<hr>
-<h1 id="sql查询引擎概述-执行引擎">SQL查询引擎概述-执行引擎</h1>
-<h2 id="一查询流程和表达式">一、查询流程和表达式</h2>
-<h3 id="1-查询流程">1. 查询流程</h3>
-<p>查询的过程：SQL语句-&gt;查询计划-&gt;查询结果</p>
-<h3 id="2-查询计划">2. 查询计划</h3>
-<p>查询计划描述了执行的动作，通过以下方式进行描述</p>
-<ol>
-<li>运算符（Operator）：Projection\TopK\Sort\Filter(Select)\HashJoin\Aggregation\TableScan&hellip;</li>
-<li>表达式（Expression）：R.id, S.id, S.age \ age &gt;= 20 \ COUNT(S.id) + 1, AVG(S.age) &lt;= 50 \ R.id = S.id \ &hellip;</li>
-<li>运算符中包含表达式
-查询计划示例图
-
-        <a data-fancybox="gallery" href="/images/sql/sql3.webp">
-            <img class="mx-auto" alt="" src="/images/sql/sql3.webp" />
-        </a>
-    </li>
-</ol>
-<h3 id="3表达式expression">3.表达式（Expression）</h3>
-<h4 id="31-表达式类型常量元组属性引用标量函数聚合函数">3.1 表达式类型：常量，元组属性引用，标量函数，聚合函数</h4>
-<ul>
-<li>常量（Constant）：表达式中的常量值</li>
-<li>元组属性引用（Tuple Atribute Ref）：引用表中某个属性的值</li>
-<li>标量函数（Scalar Function）：比较（,!=,&gt;=,&lt;=,in..）；逻辑 （AND,OR, XOR, NOT..）；算术 (AND, SUB, MUL, DIV, MOD ..)；内置函数（Buildin Function）；自定义函数（UDF）</li>
-<li>聚合函数（Agg Function）：COUNT，MAX, MIN, SUM, AVG
-
-        <a data-fancybox="gallery" href="/images/sql/sql4.webp">
-            <img class="mx-auto" alt="" src="/images/sql/sql4.webp" />
-        </a>
-    </li>
-</ul>
-<h4 id="32-表达式求值">3.2 表达式求值</h4>
-<p>整体是自底向上求值，分为 元组属性求值、标量函数求值、聚合函数求值 三种：</p>
-<ul>
-<li>元组属性求值：输入一个元组，输出元组中对应属性的值；
-标量函数求值：Row Style 输入一个元组，输出一个标量；Block Style 输入一个 Block，输出一个 vector；
-聚合函数求值：Initialize 初始化聚合状态；Update 根据当前的 Tuple 更新聚合状态；Finalize 计算聚合最终状态</li>
-</ul>
-<p>
-        <a data-fancybox="gallery" href="/images/sql/sql5.webp">
-            <img class="mx-auto" alt="" src="/images/sql/sql5.webp" />
-        </a>
-    </p>
-<h2 id="二常见运算符">二、常见运算符</h2>
-<ol>
-<li>排序(Sorting)
-排序是查询执行中的基本算法，在多个场景中使用，Order by, group by, sortmerge join
-排序类型：1) 内存排序(In-memory sorting) 快排、堆排、归并排序等；2) 外部归并排序( External Merge sorting) IO代价评估、两路外部归并、K路外部归并。</li>
-</ol>
-<p>作者：ChaunhewieTian
-链接：https://www.jianshu.com/p/fed99000e664
-来源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+            <h1 id="一什么是mysql分表分区">一。什么是mysql分表，分区</h1>
+<p>什么是分表，从表面意思上看呢，就是把一张表分成N多个小表，具体请看mysql分表的3种方法
+什么是分区，分区呢就是把一张表的数据分成N多个区块，这些区块可以在同一个磁盘上，也可以在不同的磁盘上，具体请参考mysql分区功能详细介绍，以及实例</p>
+<h1 id="二mysql分表和分区有什么区别呢">二，mysql分表和分区有什么区别呢</h1>
+<h2 id="1实现方式上">1.实现方式上</h2>
+<p>a），mysql的分表是真正的分表，一张表分成很多表后，每一个小表都是完正的一张表，都对应三个文件，一个.MYD数据文件，.MYI索引文件，.frm表结构文件。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#bbb">    </span>[root<span style="color:#000;font-weight:bold">@</span>BlackGhost<span style="color:#bbb"> </span>test]<span style="color:#000;font-weight:bold">#</span><span style="color:#bbb"> </span>ls<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span>grep<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">user</span><span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>alluser.MRG<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>alluser.frm<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>user1.MYD<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>user1.MYI<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>user1.frm<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>user2.MYD<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>user2.MYI<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>user2.frm<span style="color:#bbb">   
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>简单说明一下，上面的分表呢是利用了merge存储引擎（分表的一种），alluser是总表，下面有二个分表，user1，user2。他们二个都是独立的表，取数据的时候，我们可以通过总表来取。这里总表是没有.MYD,.MYI这二个文件的，也就是说，总表他不是一张表，没有数据，数据都放在分表里面。我们来看看.MRG到底是什么东西</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#bbb">  </span>[root<span style="color:#000;font-weight:bold">@</span>BlackGhost<span style="color:#bbb"> </span>test]<span style="color:#000;font-weight:bold">#</span><span style="color:#bbb"> </span>cat<span style="color:#bbb"> </span>alluser.MRG<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">more</span><span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>user1<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>user2<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">#</span>INSERT_METHOD<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">LAST</span><span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>从上面我们可以看出，alluser.MRG里面就存了一些分表的关系，以及插入数据的方式。可以把总表理解成一个外壳，或者是联接池。</p>
+<p>b），分区不一样，一张大表进行分区后，他还是一张表，不会变成二张表，但是他存放数据的区块变多了。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>[root<span style="color:#000;font-weight:bold">@</span>BlackGhost<span style="color:#bbb"> </span>test]<span style="color:#000;font-weight:bold">#</span><span style="color:#bbb"> </span>ls<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span>grep<span style="color:#bbb"> </span>aa<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>aa<span style="color:#000;font-weight:bold">#</span>P<span style="color:#000;font-weight:bold">#</span>p1.MYD<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>aa<span style="color:#000;font-weight:bold">#</span>P<span style="color:#000;font-weight:bold">#</span>p1.MYI<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>aa<span style="color:#000;font-weight:bold">#</span>P<span style="color:#000;font-weight:bold">#</span>p3.MYD<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>aa<span style="color:#000;font-weight:bold">#</span>P<span style="color:#000;font-weight:bold">#</span>p3.MYI<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>aa.frm<span style="color:#bbb">    
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>aa.par<span style="color:#bbb">    
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>从上面我们可以看出，aa这张表，分为二个区，p1和p3，本来是三个区，被我删了一个区。我们都知道一张表对应三个文件.MYD,.MYI,.frm。分区呢根据一定的规则把数据文件和索引文件进行了分割，还多出了一个.par文件，打开.par文件后你可以看出他记录了，这张表的分区信息，根分表中的.MRG有点像。分区后，还是一张，而不是多张表。</p>
+<h2 id="2数据处理上">2.数据处理上</h2>
+<p>a），分表后，数据都是存放在分表里，总表只是一个外壳，存取数据发生在一个一个的分表里面。看下面的例子：
+select * from alluser where id=&lsquo;12&rsquo;表面上看，是对表alluser进行操作的，其实不是的。是对alluser里面的分表进行了操作。</p>
+<p>b），分区呢，不存在分表的概念，分区只不过把存放数据的文件分成了许多小块，分区后的表呢，还是一张表。数据处理还是由自己来完成。</p>
+<h2 id="3提高性能上">3.提高性能上</h2>
+<p>a），分表后，单表的并发能力提高了，磁盘I/O性能也提高了。并发能力为什么提高了呢，因为查寻一次所花的时间变短了，如果出现高并发的话，总表可以根据不同的查询，将并发压力分到不同的小表里面。磁盘I/O性能怎么搞高了呢，本来一个非常大的.MYD文件现在也分摊到各个小表的.MYD中去了。</p>
+<p>b），mysql提出了分区的概念，我觉得就想突破磁盘I/O瓶颈，想提高磁盘的读写能力，来增加mysql性能。
+在这一点上，分区和分表的测重点不同，分表重点是存取数据时，如何提高mysql并发能力上；而分区呢，如何突破磁盘的读写能力，从而达到提高mysql性能的目的。</p>
+<h2 id="4实现的难易度上">4.实现的难易度上</h2>
+<p>a），分表的方法有很多，用merge来分表，是最简单的一种方式。这种方式根分区难易度差不多，并且对程序代码来说可以做到透明的。如果是用其他分表方式就比分区麻烦了。
+b），分区实现是比较简单的，建立分区表，根建平常的表没什么区别，并且对开代码端来说是透明的。</p>
+<h1 id="三mysql分表和分区有什么联系呢">三、mysql分表和分区有什么联系呢</h1>
+<p>1，都能提高mysql的性高，在高并发状态下都有一个良好的表面。
+2，分表和分区不矛盾，可以相互配合的，对于那些大访问量，并且表数据比较多的表，我们可以采取分表和分区结合的方式（如果merge这种分表方式，不能和分区配合的话，可以用其他的分表试），访问量不大，但是表数据很多的表，我们可以采取分区的方式等。</p>
 
         </div>
 
@@ -324,15 +308,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
+        <li><a href="/posts/10.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%9B%E5%BB%BA%E5%88%A0%E9%99%A4%E5%92%8C%E6%9F%A5%E7%9C%8B/">数据库 MySQL索引的创建、删除和查看</a></li>
+        
+        <li><a href="/posts/9.%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/">数据库:理论基础</a></li>
+        
         <li><a href="/posts/8.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">设计模式：工厂模式</a></li>
         
         <li><a href="/posts/7.%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97%E4%B9%8Bsqlc/">常用库系列之:sqlc</a></li>
         
         <li><a href="/posts/6.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">设计模式：单例模式</a></li>
-        
-        <li><a href="/posts/GIN-1.gin%E7%B3%BB%E5%88%97%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/">GIN 1.gin系列源码学习</a></li>
-        
-        <li><a href="/posts/5.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E7%AF%87/">设计模式：开篇</a></li>
         
     </ul>
 </div>
@@ -342,7 +326,9 @@
             
             <ul class="clearfix">
                 
-                <li><a href='/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%90%86%E8%AE%BA' target="_blank">数据库理论</a></li>
+                <li><a href='/tags/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a></li>
+                
+                <li><a href='/tags/MySQL' target="_blank">MySQL</a></li>
                 
             </ul>
             
