@@ -80,9 +80,9 @@
     
     <h3 class="archive-title">
         
-            <span>4</span>
+            <span>8</span>
         
-            <span>4</span>
+            <span>8</span>
         
             <span>3</span>
         
@@ -101,6 +101,118 @@
     </h3>
     
 
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://fusource.github.io/posts/18.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AE%89%E8%A3%85%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B4%A6%E6%88%B7%E5%AF%86%E7%A0%81/" target="_blank">数据库 MySQL安装初始化账户密码</a>
+            </h1>
+        </header>
+        
+  <time datetime="2023-06-20T03:33:44Z" class="post-meta meta-date dt-published">
+    2023-06-20
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a>
+  
+    <a href='/categories/MySQL' target="_blank">MySQL</a>
+  
+</div>
+
+
+        <div class="post-content">
+            Mysql安装后，会自动给root用户生成一个默认密码，一般安装过程中会有提示，但如果安装过程中没注意，那安装后就没法用root登录了。 其它……
+            <p class="readmore"><a href="https://fusource.github.io/posts/18.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AE%89%E8%A3%85%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B4%A6%E6%88%B7%E5%AF%86%E7%A0%81/" target="_blank">Continue reading</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://fusource.github.io/posts/17.%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%AB%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8D%B4%E5%88%AB/" target="_blank">数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别</a>
+            </h1>
+        </header>
+        
+  <time datetime="2023-06-20T02:51:58Z" class="post-meta meta-date dt-published">
+    2023-06-20
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a>
+  
+    <a href='/categories/MySQL' target="_blank">MySQL</a>
+  
+</div>
+
+
+        <div class="post-content">
+            概念区别： 主键： 指字段唯一不为空值的列。 主键索引：指的就是主键，主键没有明确的概念定义，主键既是约束，也是索引，主键是索引的一种，是唯一索引……
+            <p class="readmore"><a href="https://fusource.github.io/posts/17.%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%AB%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8D%B4%E5%88%AB/" target="_blank">Continue reading</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://fusource.github.io/posts/16.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%AD%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4/" target="_blank">数据库 MySQL中查询磁盘空间</a>
+            </h1>
+        </header>
+        
+  <time datetime="2023-06-20T02:18:05Z" class="post-meta meta-date dt-published">
+    2023-06-20
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a>
+  
+    <a href='/categories/MySQL' target="_blank">MySQL</a>
+  
+</div>
+
+
+        <div class="post-content">
+            查询所有数据库占用磁盘空间大小的SQL语句： 1 select concat(truncate(sum(data_length)/1024/1024,2),&#39; MB&#39;) as data_size from information_schema.tables; 查询单个库中所有表磁盘占用大小的SQL语句： 1 2 3 4 5 6 select TABLE_SCHEMA, concat(truncate(sum(data_length)/1024/1024,2),&#39; MB&#39;) as data_size, concat(truncate(sum(index_length)/1024/1024,2),&#39;MB&#39;) as index_size from information_schema.tables group……
+            <p class="readmore"><a href="https://fusource.github.io/posts/16.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%AD%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4/" target="_blank">Continue reading</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://fusource.github.io/posts/15.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E9%9B%86%E4%B8%AD%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95/" target="_blank">数据库 MySQL的集中优化方法</a>
+            </h1>
+        </header>
+        
+  <time datetime="2023-06-20T02:04:09Z" class="post-meta meta-date dt-published">
+    2023-06-20
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a>
+  
+    <a href='/categories/MySQL' target="_blank">“MySQL&#34;</a>
+  
+</div>
+
+
+        <div class="post-content">
+            没索引与有索引的区别 优点： 当表中有大量记录时，若要对表进行查询，如果没用建立索引，搜索信息方式是全表搜索，是将所有记录一一取出，和查询条件进……
+            <p class="readmore"><a href="https://fusource.github.io/posts/15.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E9%9B%86%E4%B8%AD%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95/" target="_blank">Continue reading</a></p>
+        </div>
+    </article>
     
     <article class="post">
         <header>
@@ -262,6 +374,22 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://fusource.github.io/posts/18.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AE%89%E8%A3%85%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B4%A6%E6%88%B7%E5%AF%86%E7%A0%81/" title="数据库 MySQL安装初始化账户密码" target="_blank">数据库 MySQL安装初始化账户密码</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/17.%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%AB%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8D%B4%E5%88%AB/" title="数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别" target="_blank">数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/16.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%AD%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4/" title="数据库 MySQL中查询磁盘空间" target="_blank">数据库 MySQL中查询磁盘空间</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/15.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E9%9B%86%E4%B8%AD%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95/" title="数据库 MySQL的集中优化方法" target="_blank">数据库 MySQL的集中优化方法</a>
+    </li>
+    
+    <li>
         <a href="https://fusource.github.io/posts/14.%E6%95%B0%E6%8D%AE%E5%BA%93-PHP%E5%AE%9E%E7%8E%B0MySQL%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E7%9A%84%E6%96%B9%E6%B3%95/" title="数据库 PHP实现MySQL事务处理的方法" target="_blank">数据库 PHP实现MySQL事务处理的方法</a>
     </li>
     
@@ -283,22 +411,6 @@
     
     <li>
         <a href="https://fusource.github.io/posts/9.%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/" title="数据库:理论基础" target="_blank">数据库:理论基础</a>
-    </li>
-    
-    <li>
-        <a href="https://fusource.github.io/posts/8.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" title="设计模式：工厂模式" target="_blank">设计模式：工厂模式</a>
-    </li>
-    
-    <li>
-        <a href="https://fusource.github.io/posts/7.%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97%E4%B9%8Bsqlc/" title="常用库系列之:sqlc" target="_blank">常用库系列之:sqlc</a>
-    </li>
-    
-    <li>
-        <a href="https://fusource.github.io/posts/6.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" title="设计模式：单例模式" target="_blank">设计模式：单例模式</a>
-    </li>
-    
-    <li>
-        <a href="https://fusource.github.io/posts/GIN-1.gin%E7%B3%BB%E5%88%97%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/" title="GIN 1.gin系列源码学习" target="_blank">GIN 1.gin系列源码学习</a>
     </li>
     
 </ul>
@@ -343,7 +455,7 @@
     
     <li><a href="https://fusource.github.io/categories/MD/">MD (1)</a></li>
     
-    <li><a href="https://fusource.github.io/categories/MySQL/">MySQL (4)</a></li>
+    <li><a href="https://fusource.github.io/categories/MySQL/">MySQL (8)</a></li>
     
     <li><a href="https://fusource.github.io/categories/UML/">UML (1)</a></li>
     
@@ -351,7 +463,7 @@
     
     <li><a href="https://fusource.github.io/categories/%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97/">常用库系列 (1)</a></li>
     
-    <li><a href="https://fusource.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库 (4)</a></li>
+    <li><a href="https://fusource.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库 (8)</a></li>
     
     <li><a href="https://fusource.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%90%86%E8%AE%BA/">数据库理论 (1)</a></li>
     

@@ -6,7 +6,43 @@
     <description>Recent content in Posts on 有道无术，尚可求；有术无道，止于术</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 19 Jun 2023 17:20:49 +0800</lastBuildDate><atom:link href="https://fusource.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 20 Jun 2023 11:33:44 +0800</lastBuildDate><atom:link href="https://fusource.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>数据库 MySQL安装初始化账户密码</title>
+      <link>https://fusource.github.io/posts/18.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AE%89%E8%A3%85%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B4%A6%E6%88%B7%E5%AF%86%E7%A0%81/</link>
+      <pubDate>Tue, 20 Jun 2023 11:33:44 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/18.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AE%89%E8%A3%85%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B4%A6%E6%88%B7%E5%AF%86%E7%A0%81/</guid>
+      <description>Mysql安装后，会自动给root用户生成一个默认密码，一般安装过程中会有提示，但如果安装过程中没注意，那安装后就没法用root登录了。 其它</description>
+    </item>
+    
+    <item>
+      <title>数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别</title>
+      <link>https://fusource.github.io/posts/17.%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%AB%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8D%B4%E5%88%AB/</link>
+      <pubDate>Tue, 20 Jun 2023 10:51:58 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/17.%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%AB%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8D%B4%E5%88%AB/</guid>
+      <description>概念区别： 主键： 指字段唯一不为空值的列。 主键索引：指的就是主键，主键没有明确的概念定义，主键既是约束，也是索引，主键是索引的一种，是唯一索引</description>
+    </item>
+    
+    <item>
+      <title>数据库 MySQL中查询磁盘空间</title>
+      <link>https://fusource.github.io/posts/16.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%AD%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4/</link>
+      <pubDate>Tue, 20 Jun 2023 10:18:05 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/16.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%AD%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4/</guid>
+      <description>查询所有数据库占用磁盘空间大小的SQL语句： 1 select concat(truncate(sum(data_length)/1024/1024,2),&amp;#39; MB&amp;#39;) as data_size from information_schema.tables; 查询单个库中所有表磁盘占用大小的SQL语句： 1 2 3 4 5 6 select TABLE_SCHEMA, concat(truncate(sum(data_length)/1024/1024,2),&amp;#39; MB&amp;#39;) as data_size, concat(truncate(sum(index_length)/1024/1024,2),&amp;#39;MB&amp;#39;) as index_size from information_schema.tables group</description>
+    </item>
+    
+    <item>
+      <title>数据库 MySQL的集中优化方法</title>
+      <link>https://fusource.github.io/posts/15.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E9%9B%86%E4%B8%AD%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Tue, 20 Jun 2023 10:04:09 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/15.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E9%9B%86%E4%B8%AD%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95/</guid>
+      <description>没索引与有索引的区别 优点： 当表中有大量记录时，若要对表进行查询，如果没用建立索引，搜索信息方式是全表搜索，是将所有记录一一取出，和查询条件进</description>
+    </item>
+    
     <item>
       <title>数据库 PHP实现MySQL事务处理的方法</title>
       <link>https://fusource.github.io/posts/14.%E6%95%B0%E6%8D%AE%E5%BA%93-PHP%E5%AE%9E%E7%8E%B0MySQL%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E7%9A%84%E6%96%B9%E6%B3%95/</link>

@@ -9,20 +9,20 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>书籍 | 有道无术，尚可求；有术无道，止于术</title>
-    <meta property="og:title" content="书籍 - 有道无术，尚可求；有术无道，止于术">
+    <title>数据库 MySQL的集中优化方法 | 有道无术，尚可求；有术无道，止于术</title>
+    <meta property="og:title" content="数据库 MySQL的集中优化方法 - 有道无术，尚可求；有术无道，止于术">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2023-05-14T17:36:42&#43;08:00'>
+    <meta property="article:published_time" content='2023-06-20T10:04:09&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2023-05-14T17:36:42&#43;08:00'>
+    <meta property="article:modified_time" content='2023-06-20T10:04:09&#43;08:00'>
         
     <meta name="Keywords" content="golang,go语言,go语言笔记,飞雪无情,java,android,博客,项目管理,python,软件架构,公众号,小程序">
-    <meta name="description" content="书籍">
+    <meta name="description" content="数据库 MySQL的集中优化方法">
         
     <meta name="author" content="木心芽">
-    <meta property="og:url" content="https://fusource.github.io/books/">
+    <meta property="og:url" content="https://fusource.github.io/posts/15.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E9%9B%86%E4%B8%AD%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
@@ -57,11 +57,11 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://fusource.github.io">Home</a>
+                    <a class="current" href="https://fusource.github.io">Home</a>
                     
                     <a  href="https://fusource.github.io/tools/" title="工具">工具</a>
                     
-                    <a class="current" href="https://fusource.github.io/books/" title="书籍">书籍</a>
+                    <a  href="https://fusource.github.io/books/" title="书籍">书籍</a>
                     
                     <a  href="https://fusource.github.io/archives/" title="归档">归档</a>
                     
@@ -144,7 +144,13 @@
 <div class="post-toc" style="position: absolute; top: 188px;">
     <h2 class="post-toc-title">Table of Contents</h2>
     <div class="post-toc-content">
-        <nav id="TableOfContents"></nav>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#表格拆分">表格拆分</a></li>
+    <li><a href="#尽可能的使用not-null">尽可能的使用NOT NULL</a></li>
+    <li><a href="#mysql-服务配置优化">Mysql 服务配置优化</a></li>
+  </ul>
+</nav>
     </div>
 </div>
 <script type="text/javascript">
@@ -180,13 +186,22 @@
 </script>
     <article class="post">
         <header>
-            <h1 class="post-title">书籍</h1>
+            <h1 class="post-title">数据库 MySQL的集中优化方法</h1>
         </header>
         
-  <time datetime="2023-05-14T09:36:42Z" class="post-meta meta-date dt-published">
-    2023-05-14
+  <time datetime="2023-06-20T02:04:09Z" class="post-meta meta-date dt-published">
+    2023-06-20
   </time>
 
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a>
+  
+    <a href='/categories/MySQL' target="_blank">“MySQL&#34;</a>
+  
+</div>
 
 
         
@@ -198,7 +213,65 @@
         
         
         <div class="post-content">
-            
+            <h1 id="没索引与有索引的区别">没索引与有索引的区别</h1>
+<p>优点：
+当表中有大量记录时，若要对表进行查询，如果没用建立索引，搜索信息方式是全表搜索，是将所有记录一一取出，和查询条件进行一一对比，然后返回满足条件的记录，这样做会消耗大量数据库系统时间，并造成大量磁盘I/O操作；如果在表中针对一些字段建立了索引，然后在索引中找到符合查询条件的索引值，最后通过保存在索引中的ROWID（相当于页码）快速找到表中对应的记录。</p>
+<p>缺点：
+当对表中的数据进行增加、删除和修改的时候，索引也要动态的维护，降低了数据的维护速度。</p>
+<h1 id="分页优化">分页优化</h1>
+<p>MySQL的limit工作原理就是先读取n条记录，然后抛弃前n条，读m条想要的，所以n越大，性能会越差。</p>
+<p>一般的分页做法，测试耗时 10.961s</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">FROM</span><span style="color:#bbb"> </span>v_history_data<span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">LIMIT</span><span style="color:#bbb"> </span><span style="color:#099">5000000</span>,<span style="color:#bbb"> </span><span style="color:#099">10</span><span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>优化后，测试耗时 1.943s</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">SELECT</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">FROM</span><span style="color:#bbb"> </span>v_history_data<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">INNER</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">JOIN</span><span style="color:#bbb"> </span>(<span style="color:#000;font-weight:bold">SELECT</span><span style="color:#bbb"> </span>fid<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">FROM</span><span style="color:#bbb"> </span>t_history_data<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">LIMIT</span><span style="color:#bbb"> </span><span style="color:#099">5000000</span>,<span style="color:#bbb"> </span><span style="color:#099">10</span>)<span style="color:#bbb"> </span>a<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">USING</span><span style="color:#bbb"> </span>(fid)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>优化前的SQL需要更多I/O浪费，因为先读索引，再读数据，然后抛弃无需的行。而优化后的SQL(子查询那条)只读索引(Cover index)就可以了，然后通过member_id读取需要的列。</p>
+<h1 id="多使用触发器">多使用触发器</h1>
+<h2 id="表格拆分">表格拆分</h2>
+<p>大表垂直或者水平拆分。一般是水平拆分</p>
+<h2 id="尽可能的使用not-null">尽可能的使用NOT NULL</h2>
+<p>除非你有一个很特别的原因去使用 NULL 值，你应该总是让你的字段保持 NOT NULL。</p>
+<h2 id="mysql-服务配置优化">Mysql 服务配置优化</h2>
+<p>MySQL参数的优化：内存中会为MySQL保留部分的缓冲区。这些缓冲区可以提高MySQL的速度。缓冲区的大小都是在MySQL的配置文件中进行设置的。</p>
+<p>下面对几个重要的参数进行详细介绍：</p>
+<ul>
+<li>
+<p>key_buffer_size：表示索引缓存的大小。这个值越大，使用索引进行查询的速度就越快</p>
+</li>
+<li>
+<p>table_cache：表示同时打开的表的个数。这个值越大，能同时打开的表的个数就越多。这个值不是越大越好，因为同时打开的表过多会影响操作系统的性能。</p>
+</li>
+<li>
+<p>query_cache_size：表示查询缓冲区的大小。使用查询缓存区可以提高查询的速度。这个方式只使用与修改操作少且经常执行相同的查询操作的情况；默认值是0.</p>
+</li>
+<li>
+<p>Query_cache_type：表示查询缓存区的开启状态。0表示关闭，1表示开启。</p>
+</li>
+<li>
+<p>Max_connections：表示数据库的最大连接数。这个连接数不是越大越好，因为连接会浪费内存的资源。</p>
+</li>
+<li>
+<p>Sort_buffer_size：排序缓存区的大小，这个值越大，排序就越快。</p>
+</li>
+<li>
+<p>Innodb_buffer_pool_size：表示InnoDB类型的表和索引的最大缓存。这个值越大，查询的速度就会越快。这个值太大了就会影响操作系统的性能。</p>
+</li>
+</ul>
+<p>转载：https://sunzhy.blog.csdn.net/article/details/49908683</p>
+
         </div>
 
         
@@ -206,10 +279,33 @@
 
         
 
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/14.%E6%95%B0%E6%8D%AE%E5%BA%93-PHP%E5%AE%9E%E7%8E%B0MySQL%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E7%9A%84%E6%96%B9%E6%B3%95/">数据库 PHP实现MySQL事务处理的方法</a></li>
+        
+        <li><a href="/posts/13.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84MyISAM%E5%92%8CInnoDB/">数据库 MySQL存储引擎中的MyISAM和InnoDB</a></li>
+        
+        <li><a href="/posts/11.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%88%86%E8%A1%A8%E5%92%8C%E5%88%86%E5%8C%BA%E7%9A%84%E5%8C%BA%E5%88%AB/">数据库 MySQL分表和分区的区别</a></li>
+        
+        <li><a href="/posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%88%86%E8%A1%A8%E6%96%B9%E6%B3%95/">MySQL分表方法</a></li>
+        
+        <li><a href="/posts/10.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%9B%E5%BB%BA%E5%88%A0%E9%99%A4%E5%92%8C%E6%9F%A5%E7%9C%8B/">数据库 MySQL索引的创建、删除和查看</a></li>
+        
+    </ul>
+</div>
+
 
         <div class="post-meta meta-tags">
             
-            No tags
+            <ul class="clearfix">
+                
+                <li><a href='/tags/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a></li>
+                
+                <li><a href='/tags/MySQL' target="_blank">MySQL</a></li>
+                
+            </ul>
             
         </div>
     </article>
@@ -266,6 +362,80 @@
 
 <a id="rocket" href="#top"></a>
 <script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
 
 
     <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
