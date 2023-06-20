@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>数据库 MySQL主从复制配置 | 有道无术，尚可求；有术无道，止于术</title>
+    <meta property="og:title" content="数据库 MySQL主从复制配置 - 有道无术，尚可求；有术无道，止于术">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2023-06-20T22:26:41&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-06-20T22:26:41&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,飞雪无情,java,android,博客,项目管理,python,软件架构,公众号,小程序">
+    <meta name="description" content="数据库 MySQL主从复制配置">
+        
+    <meta name="author" content="木心芽">
+    <meta property="og:url" content="https://fusource.github.io/posts/19.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%85%8D%E7%BD%AE/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://fusource.github.io">
+                        有道无术，尚可求；有术无道，止于术
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://fusource.github.io">Home</a>
+                    
+                    <a  href="https://fusource.github.io/tools/" title="工具">工具</a>
+                    
+                    <a  href="https://fusource.github.io/books/" title="书籍">书籍</a>
+                    
+                    <a  href="https://fusource.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://fusource.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">Table of Contents</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents"></nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+
+        if ($("#TableOfContents").children().length < 1) {
+            $(".post-toc").remove();
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据库 MySQL主从复制配置</h1>
+        </header>
+        
+  <time datetime="2023-06-20T14:26:41Z" class="post-meta meta-date dt-published">
+    2023-06-20
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a>
+  
+    <a href='/categories/MySQL' target="_blank">MySQL</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>reads</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="1主从服务器分别作以下操作">1、主从服务器分别作以下操作：</h1>
+<p>1.1、版本一致
+1.2、初始化表，并在后台启动mysql
+1.3、修改root的密码</p>
+<h1 id="2修改主服务器master">2、修改主服务器master:</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">#</span>vi<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">/</span>etc<span style="color:#000;font-weight:bold">/</span>my.cnf<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>[mysqld]<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>log<span style="color:#000;font-weight:bold">-</span>bin<span style="color:#000;font-weight:bold">=</span>mysql<span style="color:#000;font-weight:bold">-</span>bin<span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">//</span>[<span style="color:#a61717;background-color:#e3d2d2">必须</span>]<span style="color:#a61717;background-color:#e3d2d2">启用二进制日志</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>server<span style="color:#000;font-weight:bold">-</span>id<span style="color:#000;font-weight:bold">=</span><span style="color:#099">222</span><span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">//</span>[<span style="color:#a61717;background-color:#e3d2d2">必须</span>]<span style="color:#a61717;background-color:#e3d2d2">服务器唯一</span>ID<span style="color:#a61717;background-color:#e3d2d2">，默认是</span><span style="color:#099">1</span><span style="color:#a61717;background-color:#e3d2d2">，一般取</span>IP<span style="color:#a61717;background-color:#e3d2d2">最后一段</span><span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="3修改从服务器slave">3、修改从服务器slave:</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">#</span>vi<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">/</span>etc<span style="color:#000;font-weight:bold">/</span>my.cnf<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>[mysqld]<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>log<span style="color:#000;font-weight:bold">-</span>bin<span style="color:#000;font-weight:bold">=</span>mysql<span style="color:#000;font-weight:bold">-</span>bin<span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">//</span>[<span style="color:#a61717;background-color:#e3d2d2">不是必须</span>]<span style="color:#a61717;background-color:#e3d2d2">启用二进制日志</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>server<span style="color:#000;font-weight:bold">-</span>id<span style="color:#000;font-weight:bold">=</span><span style="color:#099">226</span><span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">//</span>[<span style="color:#a61717;background-color:#e3d2d2">必须</span>]<span style="color:#a61717;background-color:#e3d2d2">服务器唯一</span>ID<span style="color:#a61717;background-color:#e3d2d2">，默认是</span><span style="color:#099">1</span><span style="color:#a61717;background-color:#e3d2d2">，一般取</span>IP<span style="color:#a61717;background-color:#e3d2d2">最后一段</span><span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="4重启两台服务器的mysql">4、重启两台服务器的MySQL</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">/</span>etc<span style="color:#000;font-weight:bold">/</span>init.d<span style="color:#000;font-weight:bold">/</span>mysql<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">restart</span><span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="5在主服务器上建立帐户并授权slave">5、在主服务器上建立帐户并授权slave:</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">#/</span>usr<span style="color:#000;font-weight:bold">/</span><span style="color:#000;font-weight:bold">local</span><span style="color:#000;font-weight:bold">/</span>mysql<span style="color:#000;font-weight:bold">/</span>bin<span style="color:#000;font-weight:bold">/</span>mysql<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">-</span>uroot<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">-</span>pmttang<span style="color:#bbb"> 
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"> </span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">GRANT</span><span style="color:#bbb"> </span>REPLICATION<span style="color:#bbb"> </span>SLAVE<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">ON</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span>.<span style="color:#000;font-weight:bold">*</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">to</span><span style="color:#bbb"> </span><span style="color:#d14">&#39;mysync&#39;</span><span style="color:#000;font-weight:bold">@</span><span style="color:#d14">&#39;%&#39;</span><span style="color:#bbb"> </span>identified<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">by</span><span style="color:#bbb"> </span><span style="color:#d14">&#39;q123456&#39;</span>;<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>一般不用root帐号，&rsquo;%&lsquo;表示所有客户端都可能连，只要帐号，密码正确，此处可用具体客户端IP代替，如192.168.145.226，加强安全。</p>
+<h1 id="6登录主服务器的mysql查询master的状态">6、登录主服务器的mysql，查询master的状态</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">show</span><span style="color:#bbb"> </span>master<span style="color:#bbb"> </span>status;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">------------------+----------+--------------+------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>File<span style="color:#bbb">             </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">Position</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>Binlog_Do_DB<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>Binlog_Ignore_DB<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">------------------+----------+--------------+------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>mysql<span style="color:#000;font-weight:bold">-</span>bin.<span style="color:#099">000004</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">      </span><span style="color:#099">308</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">              </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">                  </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">------------------+----------+--------------+------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">   </span><span style="color:#099">1</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">row</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>注：执行完此步骤后不要再操作主服务器MYSQL，防止主服务器状态值变化</p>
+<h1 id="7配置从服务器slave">7、配置从服务器Slave：</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span>change<span style="color:#bbb"> </span>master<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">to</span><span style="color:#bbb"> </span>master_host<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;192.168.145.222&#39;</span>,master_user<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;mysync&#39;</span>,master_password<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;q123456&#39;</span>,master_log_file<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;mysql-bin.000004&#39;</span>,master_log_pos<span style="color:#000;font-weight:bold">=</span><span style="color:#099">308</span>;<span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">//</span><span style="color:#a61717;background-color:#e3d2d2">注意不要断开，</span><span style="color:#099">308</span><span style="color:#a61717;background-color:#e3d2d2">数字前后无单引号。</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>Mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">start</span><span style="color:#bbb"> </span>slave;<span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">//</span><span style="color:#a61717;background-color:#e3d2d2">启动从服务器复制功能</span><span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="8检查从服务器复制功能状态">8、检查从服务器复制功能状态：</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">show</span><span style="color:#bbb"> </span>slave<span style="color:#bbb"> </span>status<span style="color:#a61717;background-color:#e3d2d2">\</span><span style="color:#000;font-weight:bold">G</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">***************************</span><span style="color:#bbb"> </span><span style="color:#099">1</span>.<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">row</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">***************************</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Slave_IO_State:<span style="color:#bbb"> </span>Waiting<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">for</span><span style="color:#bbb"> </span>master<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">to</span><span style="color:#bbb"> </span>send<span style="color:#bbb"> </span>event<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Master_Host:<span style="color:#bbb"> </span><span style="color:#099">192</span>.<span style="color:#099">168</span>.<span style="color:#099">2</span>.<span style="color:#099">222</span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">//</span><span style="color:#a61717;background-color:#e3d2d2">主服务器地址</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Master_User:<span style="color:#bbb"> </span>mysync<span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">//</span><span style="color:#a61717;background-color:#e3d2d2">授权帐户名，尽量避免使用</span>root<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Master_Port:<span style="color:#bbb"> </span><span style="color:#099">3306</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">//</span><span style="color:#a61717;background-color:#e3d2d2">数据库端口，部分版本没有此行</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Connect_Retry:<span style="color:#bbb"> </span><span style="color:#099">60</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Master_Log_File:<span style="color:#bbb"> </span>mysql<span style="color:#000;font-weight:bold">-</span>bin.<span style="color:#099">000004</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Read_Master_Log_Pos:<span style="color:#bbb"> </span><span style="color:#099">600</span><span style="color:#bbb">     </span><span style="color:#000;font-weight:bold">//#</span><span style="color:#a61717;background-color:#e3d2d2">同步读取二进制日志的位置，大于等于</span>Exec_Master_Log_Pos<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Relay_Log_File:<span style="color:#bbb"> </span>ddte<span style="color:#000;font-weight:bold">-</span>relay<span style="color:#000;font-weight:bold">-</span>bin.<span style="color:#099">000003</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Relay_Log_Pos:<span style="color:#bbb"> </span><span style="color:#099">251</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Relay_Master_Log_File:<span style="color:#bbb"> </span>mysql<span style="color:#000;font-weight:bold">-</span>bin.<span style="color:#099">000004</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Slave_IO_Running:<span style="color:#bbb"> </span>Yes<span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">//</span><span style="color:#a61717;background-color:#e3d2d2">此状态必须</span>YES<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">              </span>Slave_SQL_Running:<span style="color:#bbb"> </span>Yes<span style="color:#bbb">     </span><span style="color:#000;font-weight:bold">//</span><span style="color:#a61717;background-color:#e3d2d2">此状态必须</span>YES<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">                               </span>......<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>注：Slave_IO及Slave_SQL进程必须正常运行，即YES状态，否则都是错误的状态(如：其中一个NO均属错误)。
+以上操作过程，主从服务器配置完成。</p>
+<h1 id="9主从服务器测试">9、主从服务器测试：</h1>
+<p>主服务器Mysql，建立数据库，并在这个库中建表插入一条数据：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">database</span><span style="color:#bbb"> </span>hi_db;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>Query<span style="color:#bbb"> </span>OK,<span style="color:#bbb"> </span><span style="color:#099">1</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">row</span><span style="color:#bbb"> </span>affected<span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span>use<span style="color:#bbb"> </span>hi_db;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">Database</span><span style="color:#bbb"> </span>changed<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb">  </span><span style="color:#000;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">table</span><span style="color:#bbb"> </span>hi_tb(id<span style="color:#bbb"> </span><span style="color:#0086b3">int</span>(<span style="color:#099">3</span>),name<span style="color:#bbb"> </span><span style="color:#0086b3">char</span>(<span style="color:#099">10</span>));<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>Query<span style="color:#bbb"> </span>OK,<span style="color:#bbb"> </span><span style="color:#099">0</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">rows</span><span style="color:#bbb"> </span>affected<span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">insert</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">into</span><span style="color:#bbb"> </span>hi_tb<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">values</span>(<span style="color:#099">001</span>,<span style="color:#d14">&#39;bobu&#39;</span>);<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>Query<span style="color:#bbb"> </span>OK,<span style="color:#bbb"> </span><span style="color:#099">1</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">row</span><span style="color:#bbb"> </span>affected<span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">show</span><span style="color:#bbb"> </span>databases;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">--------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">Database</span><span style="color:#bbb">           </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">--------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>information_schema<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>hi_db<span style="color:#bbb">              </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>mysql<span style="color:#bbb">              </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>test<span style="color:#bbb">               </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">--------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">   </span><span style="color:#099">4</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">rows</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>从服务器Mysql查询：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">show</span><span style="color:#bbb"> </span>databases;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">--------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">Database</span><span style="color:#bbb">           </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">--------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>information_schema<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>hi_db<span style="color:#bbb">              </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">          </span><span style="color:#000;font-weight:bold">//</span>I<span style="color:#d14">&#39;M here，大家看到了吧
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   | mysql              |
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   | test               |
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   +--------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   4 rows in set (0.00 sec)
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   mysql&gt; use hi_db
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   Database changed
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   mysql&gt; select * from hi_tb;           //查看主服务器上新增的具体数据
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   +------+------+
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   | id   | name |
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   +------+------+
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   |    1 | bobu |
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   +------+------+
+</span></span></span><span style="display:flex;"><span><span style="color:#d14">   1 row in set (0.00 sec)
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="10完成">10、完成：</h1>
+<p>编写一shell脚本，用nagios监控slave的两个yes（Slave_IO及Slave_SQL进程），如发现只有一个或零个yes，就表明主从有问题了，发短信警报吧。</p>
+<ul>
+<li>转载：https://sunzhy.blog.csdn.net/article/details/50912615</li>
+</ul>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/18.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AE%89%E8%A3%85%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B4%A6%E6%88%B7%E5%AF%86%E7%A0%81/">数据库 MySQL安装初始化账户密码</a></li>
+        
+        <li><a href="/posts/17.%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%AB%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8D%B4%E5%88%AB/">数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别</a></li>
+        
+        <li><a href="/posts/16.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%AD%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4/">数据库 MySQL中查询磁盘空间</a></li>
+        
+        <li><a href="/posts/15.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E9%9B%86%E4%B8%AD%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95/">数据库 MySQL的集中优化方法</a></li>
+        
+        <li><a href="/posts/14.%E6%95%B0%E6%8D%AE%E5%BA%93-PHP%E5%AE%9E%E7%8E%B0MySQL%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E7%9A%84%E6%96%B9%E6%B3%95/">数据库 PHP实现MySQL事务处理的方法</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a></li>
+                
+                <li><a href='/tags/MySQL' target="_blank">MySQL</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="https://fusource.github.io">有道无术，尚可求；有术无道，止于术 By 木心芽</a>
+        
+    </div>
+    <br />
+    
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://fusource.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://fusource.github.io">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">Latest articles</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://fusource.github.io/posts/20.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E5%88%86%E5%B1%82%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E4%B8%8E%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB/" title="数据库 MySQL的分层数据管理与无限级分类" target="_blank">数据库 MySQL的分层数据管理与无限级分类</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/19.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%85%8D%E7%BD%AE/" title="数据库 MySQL主从复制配置" target="_blank">数据库 MySQL主从复制配置</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/18.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AE%89%E8%A3%85%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B4%A6%E6%88%B7%E5%AF%86%E7%A0%81/" title="数据库 MySQL安装初始化账户密码" target="_blank">数据库 MySQL安装初始化账户密码</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/17.%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%AB%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8D%B4%E5%88%AB/" title="数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别" target="_blank">数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/16.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%AD%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4/" title="数据库 MySQL中查询磁盘空间" target="_blank">数据库 MySQL中查询磁盘空间</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/15.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E9%9B%86%E4%B8%AD%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95/" title="数据库 MySQL的集中优化方法" target="_blank">数据库 MySQL的集中优化方法</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/14.%E6%95%B0%E6%8D%AE%E5%BA%93-PHP%E5%AE%9E%E7%8E%B0MySQL%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E7%9A%84%E6%96%B9%E6%B3%95/" title="数据库 PHP实现MySQL事务处理的方法" target="_blank">数据库 PHP实现MySQL事务处理的方法</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/13.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84MyISAM%E5%92%8CInnoDB/" title="数据库 MySQL存储引擎中的MyISAM和InnoDB" target="_blank">数据库 MySQL存储引擎中的MyISAM和InnoDB</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%88%86%E8%A1%A8%E6%96%B9%E6%B3%95/" title="MySQL分表方法" target="_blank">MySQL分表方法</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/11.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%88%86%E8%A1%A8%E5%92%8C%E5%88%86%E5%8C%BA%E7%9A%84%E5%8C%BA%E5%88%AB/" title="数据库 MySQL分表和分区的区别" target="_blank">数据库 MySQL分表和分区的区别</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">Ads</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a href="https://www.aliyun.com/daily-act/ecs/activity_selection?userCode=wmnph91s" title="服务器0元试用，首购低至0.9元/月起" target="_blank" style="color:red">
+                
+                    <img src="https://img.alicdn.com/tfs/TB1_rYHo7P2gK0jSZPxXXacQpXa-690-388.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://cloud.tencent.com/act/cps/redirect?redirect=2446&amp;cps_key=012babbd9b956623edd79142a064fe00&amp;from=console" title="【腾讯云】云服务器、云数据库、COS、CDN、短信等云产品特惠热卖中" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/upload/nodir/345X200-9ae456f58874df499adf7c331c02cb0fed12b81d.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://cloud.tencent.com/act/cps/redirect?redirect=1040&amp;cps_key=012babbd9b956623edd79142a064fe00&amp;from=console" title="【腾讯云】推广者专属福利，新客户无门槛领取总价值高达2860元代金券，每种代金券限量500张，先到先得。" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345x200--2953d058277cb63c6b1cd127285163335cd6751e.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>Categories</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://fusource.github.io/categories/MD/">MD (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/MySQL/">MySQL (10)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/UML/">UML (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/vim/">vim (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97/">常用库系列 (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库 (10)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%90%86%E8%AE%BA/">数据库理论 (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式 (3)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>Tags</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://fusource.github.io/tags/MD/">MD</a>
+    
+    <a href="https://fusource.github.io/tags/MySQL/">MySQL</a>
+    
+    <a href="https://fusource.github.io/tags/UML/">UML</a>
+    
+    <a href="https://fusource.github.io/tags/vim/">vim</a>
+    
+    <a href="https://fusource.github.io/tags/%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97/">常用库系列</a>
+    
+    <a href="https://fusource.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+    
+    <a href="https://fusource.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%90%86%E8%AE%BA/">数据库理论</a>
+    
+    <a href="https://fusource.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">Links</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://fusource.github.io/" title="木心芽的博客">木心芽的博客</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://fusource.github.io/" title=""></a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">Meta</h3>
+        <ul class="widget-list">
+            
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
