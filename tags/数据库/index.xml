@@ -6,7 +6,25 @@
     <description>Recent content in 数据库 on 有道无术，尚可求；有术无道，止于术</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 20 Jun 2023 22:56:28 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 27 Jun 2023 11:26:34 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>数据库 MySQL慢查询日志</title>
+      <link>https://fusource.github.io/posts/22.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97/</link>
+      <pubDate>Tue, 27 Jun 2023 11:26:34 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/22.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97/</guid>
+      <description>mysql慢查询日志对于跟踪有问题的查询非常有用，可以分析出代码实现中耗费资源的sql语句，对我们程序的优化有很高的参考。本篇主要将慢查询日</description>
+    </item>
+    
+    <item>
+      <title>数据库 MySQL使用mysqldump到处数据</title>
+      <link>https://fusource.github.io/posts/21.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%BD%BF%E7%94%A8mysqldump%E5%88%B0%E5%A4%84%E6%95%B0%E6%8D%AE/</link>
+      <pubDate>Mon, 26 Jun 2023 23:12:49 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/21.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%BD%BF%E7%94%A8mysqldump%E5%88%B0%E5%A4%84%E6%95%B0%E6%8D%AE/</guid>
+      <description>mysql mysqldump只导出表结构或只导出数据的实现方法 备份数据库： 1 2 3 #mysqldump 数据库名 &amp;gt;数据库备份名 #mysqldump -A -u用户名 -p密码 数据库名&amp;gt;</description>
+    </item>
+    
     <item>
       <title>数据库 MySQL的分层数据管理与无限级分类</title>
       <link>https://fusource.github.io/posts/20.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E5%88%86%E5%B1%82%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E4%B8%8E%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB/</link>

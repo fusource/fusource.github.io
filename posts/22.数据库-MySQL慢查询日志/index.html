@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>数据库 MySQL慢查询日志 | 有道无术，尚可求；有术无道，止于术</title>
+    <meta property="og:title" content="数据库 MySQL慢查询日志 - 有道无术，尚可求；有术无道，止于术">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2023-06-27T11:26:34&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-06-27T11:26:34&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,飞雪无情,java,android,博客,项目管理,python,软件架构,公众号,小程序">
+    <meta name="description" content="数据库 MySQL慢查询日志">
+        
+    <meta name="author" content="木心芽">
+    <meta property="og:url" content="https://fusource.github.io/posts/22.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://fusource.github.io">
+                        有道无术，尚可求；有术无道，止于术
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://fusource.github.io">Home</a>
+                    
+                    <a  href="https://fusource.github.io/tools/" title="工具">工具</a>
+                    
+                    <a  href="https://fusource.github.io/books/" title="书籍">书籍</a>
+                    
+                    <a  href="https://fusource.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://fusource.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">Table of Contents</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents"></nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+
+        if ($("#TableOfContents").children().length < 1) {
+            $(".post-toc").remove();
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据库 MySQL慢查询日志</h1>
+        </header>
+        
+  <time datetime="2023-06-27T03:26:34Z" class="post-meta meta-date dt-published">
+    2023-06-27
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a>
+  
+    <a href='/categories/MySQL' target="_blank">MySQL</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>reads</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p>mysql慢查询日志对于跟踪有问题的查询非常有用，可以分析出代码实现中耗费资源的sql语句，对我们程序的优化有很高的参考。本篇主要将慢查询日志的开启，日志分析，这也是优化SQL程序的一般步骤中至关重要的一步。
+1.mysql慢查询日志
+　　打开mysql的慢查询日志很简单,只需要在mysql的配置文件里(windows系统是my.ini,linux系统是my.cnf)的[mysqld]下面加上:</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>log-slow-queries<span style="color:#000;font-weight:bold">=</span>mysql_slow.log
+</span></span><span style="display:flex;"><span><span style="color:#008080">long_query_time</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">3</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中log-slow-queries为日志的文件名，可以指定目录，如log-slow-queries=D:\mysql_slow.log; long_query_time为定义多长的查询我们定义为慢查询，并记录在log-slow-queries 指定的文件中，在这里我们定义超过3秒的查询进行记录。
+　　配置完成以后重启Mysql服务器，执行show variables like ‘%slow%’;查看慢查询日志是否开启，如果slow_query_log和log_slow_queries显示为on，那说明服务器的慢查询日志已
+　　经开启了。如下显示：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">show</span><span style="color:#bbb"> </span>variables<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#d14">&#39;%slow%&#39;</span>;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">---------------------+----------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>Variable_name<span style="color:#bbb">       </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>Value<span style="color:#bbb">          </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">---------------------+----------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>log_slow_queries<span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">ON</span><span style="color:#bbb">             </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>slow_launch_time<span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#099">2</span><span style="color:#bbb">              </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>slow_query_log<span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">ON</span><span style="color:#bbb">             </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>slow_query_log_file<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>mysql_slow.log<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">---------------------+----------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#099">4</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">rows</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>slow_launch_time跟慢查询日志没有任何关系, 它代表的是thread create的一个阈值，如果要看 long_query_time，可以用</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">show</span><span style="color:#bbb"> </span>variables<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">like</span><span style="color:#bbb"> </span><span style="color:#d14">&#39;%long%&#39;</span>;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">-----------------+----------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>Variable_name<span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>Value<span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">-----------------+----------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>long_query_time<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#099">3</span>.<span style="color:#099">000000</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">-----------------+----------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#099">1</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">row</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">00</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>2.mysql慢查询日志分析
+　　建表如下图，建表勿要给text加上索引，否则可能出现不了超过3秒的查询，数据表填充了4194304条数据。
+我们来执行一个超过3秒的查询，如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">from</span><span style="color:#bbb"> </span>wei<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#0086b3">text</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;orange&#39;</span>;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">---------+--------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>id<span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#0086b3">text</span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">---------+--------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#099">4103519</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>orange<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">---------+--------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#099">1</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">row</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#099">3</span>.<span style="color:#099">79</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>再执行一个超过3秒的和一个没有超过3秒的：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">from</span><span style="color:#bbb"> </span>wei<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#0086b3">text</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;xishizhaohua&#39;</span>;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>Empty<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#099">3</span>.<span style="color:#099">82</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">from</span><span style="color:#bbb"> </span>wei<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">where</span><span style="color:#bbb"> </span>id<span style="color:#000;font-weight:bold">=</span><span style="color:#099">4564</span>;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">------+--------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>id<span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#0086b3">text</span><span style="color:#bbb">               </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">------+--------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#099">4564</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>yyyyyyyyyyyyyyyyyy<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">------+--------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#099">1</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">row</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">02</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以通过下面的命令查看现在这个session有多少个慢查询：
+现在我们可以查看mysql_slow.log（win7默认在C:\ProgramData\MySQL\MySQL Server 5.1\data下面），里边内容如下，内容比较明了，包括查询花费的语句及时间，还包括查询时的时间戳等信息，其中Rows_examined为检查的行数，对我们优化也很有帮助</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Time: 121017 17:38:54</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># User@Host: root[root] @ localhost [127.0.0.1]</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Query_time: 3.794217 Lock_time: 0.000000 Rows_sent: 1  Rows_examined: 4194304</span>
+</span></span><span style="display:flex;"><span>SET <span style="color:#008080">timestamp</span><span style="color:#000;font-weight:bold">=</span>1350466734;
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">select</span> * from wei where <span style="color:#008080">text</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;orange&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Time: 121017 17:46:22</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># User@Host: root[root] @ localhost [127.0.0.1]</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Query_time: 3.819219  Lock_time: 0.000000 Rows_sent: 0  Rows_examined: 4194304</span>
+</span></span><span style="display:flex;"><span>SET <span style="color:#008080">timestamp</span><span style="color:#000;font-weight:bold">=</span>1350467182;
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">select</span> * from wei where <span style="color:#008080">text</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;xishizhaohua&#39;</span>;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>慢查询日志文件的信息格式：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Time: 130905 14:15:59         时间是2013年9月5日 14:15:59(前面部分容易看错哦,乍看以为是时间戳)</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># User@Host: root[root] @  [183.239.28.174]  请求mysql服务器的客户端ip</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Query_time: 0.735883  Lock_time: 0.000078 Rows_sent: 262  Rows_examined: 262 这里表示执行用时多少秒，0.735883秒，1秒等于1000毫秒</span>
+</span></span><span style="display:flex;"><span>SET <span style="color:#008080">timestamp</span><span style="color:#000;font-weight:bold">=</span>1378361759;  这目前我还不知道干嘛用的
+</span></span><span style="display:flex;"><span>show tables from <span style="color:#d14">`</span>test_db<span style="color:#d14">`</span>; 这个就是关键信息，指明了当时执行的是这条语句
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>3.优化
+　　其实定位到了慢查询语句就已经完成了一大不了，执行explain或者desc命令查看慢查询语句，如下图：
+问题很明显，解决方式也很明显，建索引了。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">create</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">index</span><span style="color:#bbb"> </span>text_index<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">on</span><span style="color:#bbb"> </span>wei(<span style="color:#0086b3">text</span>);<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span>Query<span style="color:#bbb"> </span>OK,<span style="color:#bbb"> </span><span style="color:#099">4194304</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">rows</span><span style="color:#bbb"> </span>affected<span style="color:#bbb"> </span>(<span style="color:#099">1</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">min</span><span style="color:#bbb"> </span><span style="color:#099">58</span>.<span style="color:#099">07</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span>Records:<span style="color:#bbb"> </span><span style="color:#099">4194304</span><span style="color:#bbb">  </span>Duplicates:<span style="color:#bbb"> </span><span style="color:#099">0</span><span style="color:#bbb">  </span>Warnings:<span style="color:#bbb"> </span><span style="color:#099">0</span><span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后在执行查询操作，用时明显少了很多。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">from</span><span style="color:#bbb"> </span>wei<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#0086b3">text</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;orange&#39;</span>;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">---------+--------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>id<span style="color:#bbb">      </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#0086b3">text</span><span style="color:#bbb">   </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">---------+--------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span><span style="color:#099">4103519</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb"> </span>orange<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">|</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#000;font-weight:bold">+</span><span style="color:#998;font-style:italic">---------+--------+
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span><span style="color:#099">1</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">row</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">33</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>mysql<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">select</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">from</span><span style="color:#bbb"> </span>wei<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">where</span><span style="color:#bbb"> </span><span style="color:#0086b3">text</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;xishizhaohua&#39;</span>;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#a61717;background-color:#e3d2d2">　　</span>Empty<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">set</span><span style="color:#bbb"> </span>(<span style="color:#099">0</span>.<span style="color:#099">01</span><span style="color:#bbb"> </span>sec)<span style="color:#bbb">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>转载：https://sunzhy.blog.csdn.net/article/details/48372287</li>
+</ul>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/21.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%BD%BF%E7%94%A8mysqldump%E5%88%B0%E5%A4%84%E6%95%B0%E6%8D%AE/">数据库 MySQL使用mysqldump到处数据</a></li>
+        
+        <li><a href="/posts/20.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E5%88%86%E5%B1%82%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E4%B8%8E%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB/">数据库 MySQL的分层数据管理与无限级分类</a></li>
+        
+        <li><a href="/posts/19.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%85%8D%E7%BD%AE/">数据库 MySQL主从复制配置</a></li>
+        
+        <li><a href="/posts/18.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AE%89%E8%A3%85%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B4%A6%E6%88%B7%E5%AF%86%E7%A0%81/">数据库 MySQL安装初始化账户密码</a></li>
+        
+        <li><a href="/posts/17.%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%AB%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8D%B4%E5%88%AB/">数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/%E6%95%B0%E6%8D%AE%E5%BA%93' target="_blank">数据库</a></li>
+                
+                <li><a href='/tags/MySQL' target="_blank">MySQL</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="https://fusource.github.io">有道无术，尚可求；有术无道，止于术 By 木心芽</a>
+        
+    </div>
+    <br />
+    
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://fusource.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://fusource.github.io">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">Latest articles</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://fusource.github.io/posts/22.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97/" title="数据库 MySQL慢查询日志" target="_blank">数据库 MySQL慢查询日志</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/21.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%BD%BF%E7%94%A8mysqldump%E5%88%B0%E5%A4%84%E6%95%B0%E6%8D%AE/" title="数据库 MySQL使用mysqldump到处数据" target="_blank">数据库 MySQL使用mysqldump到处数据</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/20.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E5%88%86%E5%B1%82%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E4%B8%8E%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB/" title="数据库 MySQL的分层数据管理与无限级分类" target="_blank">数据库 MySQL的分层数据管理与无限级分类</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/19.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%85%8D%E7%BD%AE/" title="数据库 MySQL主从复制配置" target="_blank">数据库 MySQL主从复制配置</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/18.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AE%89%E8%A3%85%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B4%A6%E6%88%B7%E5%AF%86%E7%A0%81/" title="数据库 MySQL安装初始化账户密码" target="_blank">数据库 MySQL安装初始化账户密码</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/17.%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%AB%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8D%B4%E5%88%AB/" title="数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别" target="_blank">数据库 主键、自增主键、主键索引、唯一索引概念区别与性能却别</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/16.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E4%B8%AD%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4/" title="数据库 MySQL中查询磁盘空间" target="_blank">数据库 MySQL中查询磁盘空间</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/15.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E7%9A%84%E9%9B%86%E4%B8%AD%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95/" title="数据库 MySQL的集中优化方法" target="_blank">数据库 MySQL的集中优化方法</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/14.%E6%95%B0%E6%8D%AE%E5%BA%93-PHP%E5%AE%9E%E7%8E%B0MySQL%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E7%9A%84%E6%96%B9%E6%B3%95/" title="数据库 PHP实现MySQL事务处理的方法" target="_blank">数据库 PHP实现MySQL事务处理的方法</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/13.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84MyISAM%E5%92%8CInnoDB/" title="数据库 MySQL存储引擎中的MyISAM和InnoDB" target="_blank">数据库 MySQL存储引擎中的MyISAM和InnoDB</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">Ads</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a href="https://www.aliyun.com/daily-act/ecs/activity_selection?userCode=wmnph91s" title="服务器0元试用，首购低至0.9元/月起" target="_blank" style="color:red">
+                
+                    <img src="https://img.alicdn.com/tfs/TB1_rYHo7P2gK0jSZPxXXacQpXa-690-388.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://cloud.tencent.com/act/cps/redirect?redirect=2446&amp;cps_key=012babbd9b956623edd79142a064fe00&amp;from=console" title="【腾讯云】云服务器、云数据库、COS、CDN、短信等云产品特惠热卖中" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/upload/nodir/345X200-9ae456f58874df499adf7c331c02cb0fed12b81d.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://cloud.tencent.com/act/cps/redirect?redirect=1040&amp;cps_key=012babbd9b956623edd79142a064fe00&amp;from=console" title="【腾讯云】推广者专属福利，新客户无门槛领取总价值高达2860元代金券，每种代金券限量500张，先到先得。" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345x200--2953d058277cb63c6b1cd127285163335cd6751e.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>Categories</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://fusource.github.io/categories/MD/">MD (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/MySQL/">MySQL (12)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/UML/">UML (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/vim/">vim (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97/">常用库系列 (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库 (12)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%90%86%E8%AE%BA/">数据库理论 (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式 (3)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>Tags</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://fusource.github.io/tags/MD/">MD</a>
+    
+    <a href="https://fusource.github.io/tags/MySQL/">MySQL</a>
+    
+    <a href="https://fusource.github.io/tags/UML/">UML</a>
+    
+    <a href="https://fusource.github.io/tags/vim/">vim</a>
+    
+    <a href="https://fusource.github.io/tags/%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97/">常用库系列</a>
+    
+    <a href="https://fusource.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+    
+    <a href="https://fusource.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%90%86%E8%AE%BA/">数据库理论</a>
+    
+    <a href="https://fusource.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">Links</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://fusource.github.io/" title="木心芽的博客">木心芽的博客</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://fusource.github.io/" title=""></a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">Meta</h3>
+        <ul class="widget-list">
+            
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
