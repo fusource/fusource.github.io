@@ -6,22 +6,58 @@
     <description>Recent content in Tags on 有道无术，尚可求；有术无道，止于术</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 24 Jul 2023 15:45:01 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 25 Jul 2023 11:12:01 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>桥接模式</title>
-      <link>https://fusource.github.io/tags/%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</link>
-      <pubDate>Mon, 24 Jul 2023 15:45:01 +0800</pubDate>
+      <title>组合模式</title>
+      <link>https://fusource.github.io/tags/%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 25 Jul 2023 11:12:01 +0800</pubDate>
       
-      <guid>https://fusource.github.io/tags/%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</guid>
+      <guid>https://fusource.github.io/tags/%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F/</guid>
       <description></description>
     </item>
     
     <item>
       <title>设计模式</title>
       <link>https://fusource.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
-      <pubDate>Mon, 24 Jul 2023 15:45:01 +0800</pubDate>
+      <pubDate>Tue, 25 Jul 2023 11:12:01 +0800</pubDate>
       
       <guid>https://fusource.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>适配器模式</title>
+      <link>https://fusource.github.io/tags/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 25 Jul 2023 10:33:23 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/tags/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>门面模式</title>
+      <link>https://fusource.github.io/tags/%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 25 Jul 2023 09:39:29 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/tags/%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>装饰器模式</title>
+      <link>https://fusource.github.io/tags/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 25 Jul 2023 09:22:22 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/tags/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>桥接模式</title>
+      <link>https://fusource.github.io/tags/%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Mon, 24 Jul 2023 15:45:01 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/tags/%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</guid>
       <description></description>
     </item>
     
