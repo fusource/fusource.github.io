@@ -6,7 +6,61 @@
     <description>Recent content in Posts on 有道无术，尚可求；有术无道，止于术</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 25 Jul 2023 11:12:01 +0800</lastBuildDate><atom:link href="https://fusource.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 26 Jul 2023 16:57:48 +0800</lastBuildDate><atom:link href="https://fusource.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>36.设计模式：状态模式</title>
+      <link>https://fusource.github.io/posts/36.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 16:57:48 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/36.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>35.设计模式：(行为型)职责链模式</title>
+      <link>https://fusource.github.io/posts/35.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 16:09:44 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/35.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/</guid>
+      <description>职责链模式原理 职责链模式（Chain of Responsibility Pattern）是一种行为型设计模式，它允许多个对象依次处理同一个请求，直到其中一个对象能够处理为止</description>
+    </item>
+    
+    <item>
+      <title>34.设计模式:(行为型)策略模式</title>
+      <link>https://fusource.github.io/posts/34.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 15:30:28 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/34.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</guid>
+      <description>策略模式原理 策略模式（Strategy Pattern）是一种行为型设计模式，它允许在运行时根据不同的情况选择不同的算法或行为。 策略模式的核心</description>
+    </item>
+    
+    <item>
+      <title>33.设计模式：(行为型)模板模式</title>
+      <link>https://fusource.github.io/posts/33.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 11:49:03 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/33.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F/</guid>
+      <description>模板模式原理 模板模式是一种行为设计模式，它定义了一个操作中的算法的框架，将一些步骤延迟到子类中实现。模板模式使得子类可以在不改变算法结构的情</description>
+    </item>
+    
+    <item>
+      <title>32.设计模式：(行为型)观察者模式</title>
+      <link>https://fusource.github.io/posts/32.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 10:24:53 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/32.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/</guid>
+      <description>观察者模式原理 1 2 3 4 5 6 7 8 9 10 11 观察者模式（Observer Pattern）是一种行为型设计模式，它定义了一种一对多的依赖关系，让多个观</description>
+    </item>
+    
+    <item>
+      <title>31.设计模式：(结构型)享元模式</title>
+      <link>https://fusource.github.io/posts/31.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9E%8B%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 09:48:18 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/31.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9E%8B%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/</guid>
+      <description>享元模式原理 享元模式是一种结构型设计模式，它旨在有效地支持大量细粒度对象的共享。该模式通过共享对象的内部状态来减少内存使用和对象创建的开销。</description>
+    </item>
+    
     <item>
       <title>30.设计模式：(结构型)组合模式</title>
       <link>https://fusource.github.io/posts/30.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9E%8B%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F/</link>

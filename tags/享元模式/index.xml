@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>享元模式 on 有道无术，尚可求；有术无道，止于术</title>
+    <link>https://fusource.github.io/tags/%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/</link>
+    <description>Recent content in 享元模式 on 有道无术，尚可求；有术无道，止于术</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 26 Jul 2023 09:48:18 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>31.设计模式：(结构型)享元模式</title>
+      <link>https://fusource.github.io/posts/31.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9E%8B%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 09:48:18 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/31.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9E%8B%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/</guid>
+      <description>享元模式原理 享元模式是一种结构型设计模式，它旨在有效地支持大量细粒度对象的共享。该模式通过共享对象的内部状态来减少内存使用和对象创建的开销。</description>
+    </item>
+    
+  </channel>
+</rss>

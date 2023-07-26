@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>模板模式 on 有道无术，尚可求；有术无道，止于术</title>
+    <link>https://fusource.github.io/tags/%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F/</link>
+    <description>Recent content in 模板模式 on 有道无术，尚可求；有术无道，止于术</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 26 Jul 2023 11:49:03 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>33.设计模式：(行为型)模板模式</title>
+      <link>https://fusource.github.io/posts/33.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 11:49:03 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/33.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F/</guid>
+      <description>模板模式原理 模板模式是一种行为设计模式，它定义了一个操作中的算法的框架，将一些步骤延迟到子类中实现。模板模式使得子类可以在不改变算法结构的情</description>
+    </item>
+    
+  </channel>
+</rss>
