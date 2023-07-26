@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>策略模式 on 有道无术，尚可求；有术无道，止于术</title>
+    <link>https://fusource.github.io/categories/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</link>
+    <description>Recent content in 策略模式 on 有道无术，尚可求；有术无道，止于术</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 26 Jul 2023 15:30:28 +0800</lastBuildDate><atom:link href="https://fusource.github.io/categories/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>34.设计模式:(行为型)策略模式</title>
+      <link>https://fusource.github.io/posts/34.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 15:30:28 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/34.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</guid>
+      <description>策略模式原理 策略模式（Strategy Pattern）是一种行为型设计模式，它允许在运行时根据不同的情况选择不同的算法或行为。 策略模式的核心</description>
+    </item>
+    
+  </channel>
+</rss>
