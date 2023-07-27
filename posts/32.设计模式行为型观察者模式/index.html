@@ -206,35 +206,18 @@
         
         <div class="post-content">
             <h1 id="观察者模式原理">观察者模式原理</h1>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">观察者模式（</span>Observer Pattern<span style="color:#a61717;background-color:#e3d2d2">）是一种行为型设计模式，它定义了一种一对多的依赖关系，让多个观察者对象同时监听一个主题对象，当主题对象发生变化时，会自动通知所有观察者对象进行相应的更新。</span>
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">观察者模式的核心思想是将主题和观察者对象解耦，使它们可以独立地进行变化。主题对象负责维护一组观察者对象，并在自身状态发生变化时通知观察者对象。观察者对象则定义了在接收到主题通知时所需要执行的操作。</span>
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">在观察者模式中，主题对象通常会提供注册和取消注册观察者对象的方法，以及通知观察者对象的方法。观察者对象则需要实现一个更新方法，用于接收主题对象的通知并进行相应的处理。</span>
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">当主题对象的状态发生变化时，它会遍历已注册的观察者对象列表，并依次调用它们的更新方法。这样，所有观察者对象都能及时获取到主题对象的最新状态，并进行相应的处理。</span>
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">观察者模式的优点包括了解耦主题和观察者对象、支持动态注册和取消注册观察者对象、易于扩展等。它适用于当一个对象的改变需要同时通知其他多个对象时，或者当一个对象需要通知其他对象，但又希望尽量减少与其他对象的耦合性的场景。</span>
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">总结一下，观察者模式通过定义一对多的依赖关系，实现了主题对象和观察者对象的解耦。主题对象在状态发生变化时会自动通知观察者对象，使其能够及时作出相应的处理。这种模式能够提高系统的灵活性和可扩展性，适用于多个对象之间存在依赖关系的场景。</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="下面是一个使用go语言实现观察者模式的示例">下面是一个使用Go语言实现观察者模式的示例：</h1>
+<pre tabindex="0"><code>观察者模式（Observer Pattern）是一种行为型设计模式，它定义了一种一对多的依赖关系，让多个观察者对象同时监听一个主题对象，当主题对象发生变化时，会自动通知所有观察者对象进行相应的更新。
+ 
+观察者模式的核心思想是将主题和观察者对象解耦，使它们可以独立地进行变化。主题对象负责维护一组观察者对象，并在自身状态发生变化时通知观察者对象。观察者对象则定义了在接收到主题通知时所需要执行的操作。
+ 
+在观察者模式中，主题对象通常会提供注册和取消注册观察者对象的方法，以及通知观察者对象的方法。观察者对象则需要实现一个更新方法，用于接收主题对象的通知并进行相应的处理。
+ 
+当主题对象的状态发生变化时，它会遍历已注册的观察者对象列表，并依次调用它们的更新方法。这样，所有观察者对象都能及时获取到主题对象的最新状态，并进行相应的处理。
+ 
+观察者模式的优点包括了解耦主题和观察者对象、支持动态注册和取消注册观察者对象、易于扩展等。它适用于当一个对象的改变需要同时通知其他多个对象时，或者当一个对象需要通知其他对象，但又希望尽量减少与其他对象的耦合性的场景。
+ 
+总结一下，观察者模式通过定义一对多的依赖关系，实现了主题对象和观察者对象的解耦。主题对象在状态发生变化时会自动通知观察者对象，使其能够及时作出相应的处理。这种模式能够提高系统的灵活性和可扩展性，适用于多个对象之间存在依赖关系的场景。
+</code></pre><h1 id="下面是一个使用go语言实现观察者模式的示例">下面是一个使用Go语言实现观察者模式的示例：</h1>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
