@@ -6,7 +6,25 @@
     <description>Recent content in Tags on 有道无术，尚可求；有术无道，止于术</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 26 Jul 2023 16:09:44 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 27 Jul 2023 11:53:18 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>迭代器模式</title>
+      <link>https://fusource.github.io/tags/%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 27 Jul 2023 11:53:18 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/tags/%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>状态模式</title>
+      <link>https://fusource.github.io/tags/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 26 Jul 2023 16:57:48 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/tags/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>职责链模式</title>
       <link>https://fusource.github.io/tags/%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/</link>
