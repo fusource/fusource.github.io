@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>中介者模式 on 有道无术，尚可求；有术无道，止于术</title>
+    <link>https://fusource.github.io/tags/%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/</link>
+    <description>Recent content in 中介者模式 on 有道无术，尚可求；有术无道，止于术</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 28 Jul 2023 15:50:28 +0800</lastBuildDate><atom:link href="https://fusource.github.io/tags/%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>设计模式：(行为型)中介者模式</title>
+      <link>https://fusource.github.io/posts/42.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Fri, 28 Jul 2023 15:50:28 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/42.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/</guid>
+      <description>中介者模式原理 中介者模式（Mediator Pattern）是一种行为型设计模式，它用于降低多个对象之间的耦合性，通过引入一个中介者对象来协调</description>
+    </item>
+    
+  </channel>
+</rss>

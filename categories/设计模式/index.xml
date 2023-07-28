@@ -6,7 +6,52 @@
     <description>Recent content in 设计模式 on 有道无术，尚可求；有术无道，止于术</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 27 Jul 2023 11:53:18 +0800</lastBuildDate><atom:link href="https://fusource.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 28 Jul 2023 15:50:28 +0800</lastBuildDate><atom:link href="https://fusource.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>设计模式：(行为型)中介者模式</title>
+      <link>https://fusource.github.io/posts/42.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Fri, 28 Jul 2023 15:50:28 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/42.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/</guid>
+      <description>中介者模式原理 中介者模式（Mediator Pattern）是一种行为型设计模式，它用于降低多个对象之间的耦合性，通过引入一个中介者对象来协调</description>
+    </item>
+    
+    <item>
+      <title>设计模式:(行为型)解释器模式</title>
+      <link>https://fusource.github.io/posts/41.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Fri, 28 Jul 2023 15:14:42 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/41.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F/</guid>
+      <description>解释器模式原理 解释器模式是一种行为型设计模式，它用于解释和执行特定语言的表达式。该模式通过定义一个表示语言文法的类层次结构，以及使用这些类来</description>
+    </item>
+    
+    <item>
+      <title>设计模式:(行为模式)命令模式</title>
+      <link>https://fusource.github.io/posts/40.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Fri, 28 Jul 2023 14:20:30 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/40.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/</guid>
+      <description>命令模式 命令模式是一种行为型设计模式，它将请求封装成一个对象，从而允许我们将请求的发送者和接收者解耦。在命令模式中，有以下几个关键角色： 1. 命</description>
+    </item>
+    
+    <item>
+      <title>设计模式：(行为型)备忘录模式</title>
+      <link>https://fusource.github.io/posts/39.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Fri, 28 Jul 2023 11:42:30 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/39.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/</guid>
+      <description>备忘录模式原理： 备忘录模式是一种行为型设计模式，它允许你捕获一个对象的内部状态并在需要时恢复它。备忘录模式通过将对象状态保存到备忘录对象中，</description>
+    </item>
+    
+    <item>
+      <title>设计模式：(行为型)访问者模式</title>
+      <link>https://fusource.github.io/posts/38.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Fri, 28 Jul 2023 09:12:22 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/38.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F/</guid>
+      <description>访问者模式原理 访问者模式是一种行为型设计模式，它允许你在不修改现有对象结构的情况下定义新操作。该模式将算法与对象结构分离，使得可以在不改变对</description>
+    </item>
+    
     <item>
       <title>设计模式：(行为型)迭代器模式</title>
       <link>https://fusource.github.io/posts/37.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/</link>

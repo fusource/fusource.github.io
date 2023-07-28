@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>设计模式：(行为型)访问者模式 | 有道无术，尚可求；有术无道，止于术</title>
+    <meta property="og:title" content="设计模式：(行为型)访问者模式 - 有道无术，尚可求；有术无道，止于术">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2023-07-28T09:12:22&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-07-28T09:12:22&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,飞雪无情,java,android,博客,项目管理,python,软件架构,公众号,小程序">
+    <meta name="description" content="设计模式：(行为型)访问者模式">
+        
+    <meta name="author" content="木心芽">
+    <meta property="og:url" content="https://fusource.github.io/posts/38.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://fusource.github.io">
+                        有道无术，尚可求；有术无道，止于术
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://fusource.github.io">Home</a>
+                    
+                    <a  href="https://fusource.github.io/tools/" title="工具">工具</a>
+                    
+                    <a  href="https://fusource.github.io/books/" title="书籍">书籍</a>
+                    
+                    <a  href="https://fusource.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://fusource.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">Table of Contents</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents"></nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+
+        if ($("#TableOfContents").children().length < 1) {
+            $(".post-toc").remove();
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">设计模式：(行为型)访问者模式</h1>
+        </header>
+        
+  <time datetime="2023-07-28T01:12:22Z" class="post-meta meta-date dt-published">
+    2023-07-28
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F' target="_blank">设计模式</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>reads</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="访问者模式原理">访问者模式原理</h1>
+<pre tabindex="0"><code>访问者模式是一种行为型设计模式，它允许你在不修改现有对象结构的情况下定义新操作。该模式将算法与对象结构分离，使得可以在不改变对象结构的情况下添加新的操作。
+ 
+访问者模式的核心思想是，定义一个访问者（Visitor）类，该类包含了对对象结构中各个元素进行访问的方法。对象结构中的元素通过接受访问者对象来实现对自身的访问。
+ 
+访问者模式的主要参与者包括：
+- 访问者（Visitor）：定义了对每个元素访问的方法，通过不同的访问者可以实现不同的操作。
+- 具体访问者（Concrete Visitor）：实现了访问者定义的方法，完成对具体元素的操作。
+- 元素（Element）：定义了接受访问者对象的接口，即接受访问者对自身进行操作的方法。
+- 具体元素（Concrete Element）：实现了元素定义的接口，完成对自身的操作。
+- 对象结构（Object Structure）：存储了元素对象，并提供了遍历元素的方法。
+ 
+使用访问者模式的好处是，可以在不修改现有对象结构的情况下，定义新的操作。这使得在需要对现有对象结构进行多种不同操作的场景下，代码的可扩展性和可维护性得到了提高。
+ 
+然而，访问者模式也有一些限制。它会导致具体元素与具体访问者之间的耦合，增加了系统的复杂性。同时，如果对象结构中的元素经常发生变化，就需要频繁修改访问者接口和具体访问者的实现，带来一定的维护成本。
+ 
+总之，访问者模式是一种将算法与对象结构分离的设计模式，它可以方便地对对象结构中的元素进行不同的操作，同时保持了代码的可扩展性和可维护性。
+</code></pre><p>下面是一个使用Go语言实现访问者模式的案例：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">package</span> main
+</span></span><span style="display:flex;"><span> <span style="color:#000;font-weight:bold">import</span> <span style="color:#d14">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#998;font-style:italic">// 元素接口
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">type</span> Element <span style="color:#000;font-weight:bold">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#900;font-weight:bold">Accept</span>(visitor Visitor)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> <span style="color:#998;font-style:italic">// 具体元素A
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">type</span> ConcreteElementA <span style="color:#000;font-weight:bold">struct</span>{}
+</span></span><span style="display:flex;"><span> <span style="color:#000;font-weight:bold">func</span> (c <span style="color:#000;font-weight:bold">*</span>ConcreteElementA) <span style="color:#900;font-weight:bold">Accept</span>(visitor Visitor) {
+</span></span><span style="display:flex;"><span>	visitor.<span style="color:#900;font-weight:bold">VisitConcreteElementA</span>(c)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> <span style="color:#998;font-style:italic">// 具体元素B
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">type</span> ConcreteElementB <span style="color:#000;font-weight:bold">struct</span>{}
+</span></span><span style="display:flex;"><span> <span style="color:#000;font-weight:bold">func</span> (c <span style="color:#000;font-weight:bold">*</span>ConcreteElementB) <span style="color:#900;font-weight:bold">Accept</span>(visitor Visitor) {
+</span></span><span style="display:flex;"><span>	visitor.<span style="color:#900;font-weight:bold">VisitConcreteElementB</span>(c)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> <span style="color:#998;font-style:italic">// 访问者接口
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">type</span> Visitor <span style="color:#000;font-weight:bold">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#900;font-weight:bold">VisitConcreteElementA</span>(element <span style="color:#000;font-weight:bold">*</span>ConcreteElementA)
+</span></span><span style="display:flex;"><span>	<span style="color:#900;font-weight:bold">VisitConcreteElementB</span>(element <span style="color:#000;font-weight:bold">*</span>ConcreteElementB)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> <span style="color:#998;font-style:italic">// 具体访问者
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">type</span> ConcreteVisitor <span style="color:#000;font-weight:bold">struct</span>{}
+</span></span><span style="display:flex;"><span> <span style="color:#000;font-weight:bold">func</span> (c <span style="color:#000;font-weight:bold">*</span>ConcreteVisitor) <span style="color:#900;font-weight:bold">VisitConcreteElementA</span>(element <span style="color:#000;font-weight:bold">*</span>ConcreteElementA) {
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#d14">&#34;访问者对具体元素A进行操作&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> <span style="color:#000;font-weight:bold">func</span> (c <span style="color:#000;font-weight:bold">*</span>ConcreteVisitor) <span style="color:#900;font-weight:bold">VisitConcreteElementB</span>(element <span style="color:#000;font-weight:bold">*</span>ConcreteElementB) {
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#d14">&#34;访问者对具体元素B进行操作&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> <span style="color:#998;font-style:italic">// 对象结构
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">type</span> ObjectStructure <span style="color:#000;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>	elements []Element
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> <span style="color:#000;font-weight:bold">func</span> (o <span style="color:#000;font-weight:bold">*</span>ObjectStructure) <span style="color:#900;font-weight:bold">Attach</span>(element Element) {
+</span></span><span style="display:flex;"><span>	o.elements = <span style="color:#0086b3">append</span>(o.elements, element)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> <span style="color:#000;font-weight:bold">func</span> (o <span style="color:#000;font-weight:bold">*</span>ObjectStructure) <span style="color:#900;font-weight:bold">Accept</span>(visitor Visitor) {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">for</span> _, element <span style="color:#000;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">range</span> o.elements {
+</span></span><span style="display:flex;"><span>		element.<span style="color:#900;font-weight:bold">Accept</span>(visitor)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> <span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+</span></span><span style="display:flex;"><span>	objectStructure <span style="color:#000;font-weight:bold">:=</span> ObjectStructure{}
+</span></span><span style="display:flex;"><span>	objectStructure.<span style="color:#900;font-weight:bold">Attach</span>(<span style="color:#000;font-weight:bold">&amp;</span>ConcreteElementA{})
+</span></span><span style="display:flex;"><span>	objectStructure.<span style="color:#900;font-weight:bold">Attach</span>(<span style="color:#000;font-weight:bold">&amp;</span>ConcreteElementB{})
+</span></span><span style="display:flex;"><span> 	visitor <span style="color:#000;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">&amp;</span>ConcreteVisitor{}
+</span></span><span style="display:flex;"><span>	objectStructure.<span style="color:#900;font-weight:bold">Accept</span>(visitor)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在上述代码中，我们定义了 Element 接口和两个具体元素 ConcreteElementA 和 ConcreteElementB ，它们都实现了 Accept 方法用于接受访问者的访问。</p>
+<p>接着，我们定义了 Visitor 接口和具体访问者 ConcreteVisitor ，具体访问者实现了对具体元素的操作方法。</p>
+<p>最后，我们定义了 ObjectStructure 对象结构，它存储了多个元素对象，并提供了 Attach 方法用于添加元素，以及 Accept 方法用于接受访问者的访问。</p>
+<p>在 main 函数中，我们创建了一个 ObjectStructure 对象，并添加了 ConcreteElementA 和 ConcreteElementB 两个具体元素。然后，我们创建了一个具体访问者 ConcreteVisitor ，并调用 ObjectStructure 的 Accept 方法接受访问者的访问。</p>
+<p>运行以上代码，输出结果将是：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">访问者对具体元素</span>A<span style="color:#a61717;background-color:#e3d2d2">进行操作</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">访问者对具体元素</span>B<span style="color:#a61717;background-color:#e3d2d2">进行操作</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这表明访问者成功地对具体元素A和B进行了不同的操作。</p>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/37.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/">设计模式：(行为型)迭代器模式</a></li>
+        
+        <li><a href="/posts/36.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/">设计模式：(行为型)状态模式</a></li>
+        
+        <li><a href="/posts/35.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/">设计模式：(行为型)职责链模式</a></li>
+        
+        <li><a href="/posts/34.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/">设计模式:(行为型)策略模式</a></li>
+        
+        <li><a href="/posts/33.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F/">设计模式：(行为型)模板模式</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F' target="_blank">访问者模式</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="https://fusource.github.io">有道无术，尚可求；有术无道，止于术 By 木心芽</a>
+        
+    </div>
+    <br />
+    
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://fusource.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://fusource.github.io">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">Latest articles</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://fusource.github.io/posts/42.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/" title="设计模式：(行为型)中介者模式" target="_blank">设计模式：(行为型)中介者模式</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/41.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F/" title="设计模式:(行为型)解释器模式" target="_blank">设计模式:(行为型)解释器模式</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/40.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/" title="设计模式:(行为模式)命令模式" target="_blank">设计模式:(行为模式)命令模式</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/39.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/" title="设计模式：(行为型)备忘录模式" target="_blank">设计模式：(行为型)备忘录模式</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/38.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F/" title="设计模式：(行为型)访问者模式" target="_blank">设计模式：(行为型)访问者模式</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/37.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/" title="设计模式：(行为型)迭代器模式" target="_blank">设计模式：(行为型)迭代器模式</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/36.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" title="设计模式：(行为型)状态模式" target="_blank">设计模式：(行为型)状态模式</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/35.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/" title="设计模式：(行为型)职责链模式" target="_blank">设计模式：(行为型)职责链模式</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/34.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/" title="设计模式:(行为型)策略模式" target="_blank">设计模式:(行为型)策略模式</a>
+    </li>
+    
+    <li>
+        <a href="https://fusource.github.io/posts/33.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F/" title="设计模式：(行为型)模板模式" target="_blank">设计模式：(行为型)模板模式</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">Ads</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a href="https://www.aliyun.com/daily-act/ecs/activity_selection?userCode=wmnph91s" title="服务器0元试用，首购低至0.9元/月起" target="_blank" style="color:red">
+                
+                    <img src="https://img.alicdn.com/tfs/TB1_rYHo7P2gK0jSZPxXXacQpXa-690-388.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://cloud.tencent.com/act/cps/redirect?redirect=2446&amp;cps_key=012babbd9b956623edd79142a064fe00&amp;from=console" title="【腾讯云】云服务器、云数据库、COS、CDN、短信等云产品特惠热卖中" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/upload/nodir/345X200-9ae456f58874df499adf7c331c02cb0fed12b81d.jpg">
+                
+            </a>
+        </li>
+        
+        <li>
+            <a href="https://cloud.tencent.com/act/cps/redirect?redirect=1040&amp;cps_key=012babbd9b956623edd79142a064fe00&amp;from=console" title="【腾讯云】推广者专属福利，新客户无门槛领取总价值高达2860元代金券，每种代金券限量500张，先到先得。" target="_blank" style="color:red">
+                
+                    <img src="https://upload-dianshi-1255598498.file.myqcloud.com/345x200--2953d058277cb63c6b1cd127285163335cd6751e.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>Categories</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://fusource.github.io/categories/MD/">MD (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/UML/">UML (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/vim/">vim (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97/">常用库系列 (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库 (13)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%90%86%E8%AE%BA/">数据库理论 (1)</a></li>
+    
+    <li><a href="https://fusource.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式 (23)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>Tags</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://fusource.github.io/tags/MD/">MD</a>
+    
+    <a href="https://fusource.github.io/tags/MySQL/">MySQL</a>
+    
+    <a href="https://fusource.github.io/tags/UML/">UML</a>
+    
+    <a href="https://fusource.github.io/tags/vim/">vim</a>
+    
+    <a href="https://fusource.github.io/tags/%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/">中介者模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/">享元模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">代理模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">原型模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/">命令模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/">备忘录模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E5%B8%B8%E7%94%A8%E5%BA%93%E7%B3%BB%E5%88%97/">常用库系列</a>
+    
+    <a href="https://fusource.github.io/tags/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">建造者模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%90%86%E8%AE%BA/">数据库理论</a>
+    
+    <a href="https://fusource.github.io/tags/%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/">桥接模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F/">模板模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/">状态模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/">策略模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F/">组合模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/">职责链模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/">装饰器模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/">观察者模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F/">解释器模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F/">访问者模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/">迭代器模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/">适配器模式</a>
+    
+    <a href="https://fusource.github.io/tags/%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/">门面模式</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">Links</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://fusource.github.io/" title="木心芽的博客">木心芽的博客</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://fusource.github.io/" title=""></a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">Meta</h3>
+        <ul class="widget-list">
+            
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
