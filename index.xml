@@ -6,7 +6,16 @@
     <description>Recent content on 有道无术，尚可求；有术无道，止于术</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 28 Jul 2023 15:50:28 +0800</lastBuildDate><atom:link href="https://fusource.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 04 Aug 2023 10:06:58 +0800</lastBuildDate><atom:link href="https://fusource.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SIP基础知识</title>
+      <link>https://fusource.github.io/posts/43.SIP%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Fri, 04 Aug 2023 10:06:58 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/43.SIP%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <description>技术解码 | GB28181/SIP/SDP 协议</description>
+    </item>
+    
     <item>
       <title>设计模式：(行为型)中介者模式</title>
       <link>https://fusource.github.io/posts/42.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/</link>
