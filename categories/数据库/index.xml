@@ -89,6 +89,15 @@
     </item>
     
     <item>
+      <title>数据库 MySQL存储引擎中的MyISAM和InnoDB</title>
+      <link>https://fusource.github.io/posts/13.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84MyISAM%E5%92%8CInnoDB/</link>
+      <pubDate>Mon, 19 Jun 2023 17:06:26 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/13.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84MyISAM%E5%92%8CInnoDB/</guid>
+      <description>在使用MySQL的过程中对MyISAM和InnoDB这两个概念存在了些疑问，到底两者引擎有何分别一直是存在我心中的疑问。为了解开这个谜题，搜</description>
+    </item>
+    
+    <item>
       <title>MySQL分表方法</title>
       <link>https://fusource.github.io/posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93-MySQL%E5%88%86%E8%A1%A8%E6%96%B9%E6%B3%95/</link>
       <pubDate>Mon, 19 Jun 2023 15:15:13 +0800</pubDate>

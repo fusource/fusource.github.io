@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SIP on 有道无术，尚可求；有术无道，止于术</title>
+    <link>https://fusource.github.io/categories/SIP/</link>
+    <description>Recent content in SIP on 有道无术，尚可求；有术无道，止于术</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 04 Aug 2023 10:06:58 +0800</lastBuildDate><atom:link href="https://fusource.github.io/categories/SIP/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SIP基础知识</title>
+      <link>https://fusource.github.io/posts/43.SIP%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Fri, 04 Aug 2023 10:06:58 +0800</pubDate>
+      
+      <guid>https://fusource.github.io/posts/43.SIP%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <description>技术解码 | GB28181/SIP/SDP 协议</description>
+    </item>
+    
+  </channel>
+</rss>
